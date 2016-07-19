@@ -1,0 +1,26 @@
+{
+  "name": "mysql-query-builder",
+  "version": "0.1.0",
+  "description": "MySQL query builder",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "test": "tests/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niklucky/mysql-query-builder.git"
+  },
+  "keywords": [
+    "mysql",
+    "query",
+    "builder",
+    "query"
+  ],
+  "author": "Nikita Zhuravlev <iam@niklucky.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/niklucky/mysql-query-builder/issues"
+  },
+  "homepage": "https://github.com/niklucky/mysql-query-builder#readme"
+}
