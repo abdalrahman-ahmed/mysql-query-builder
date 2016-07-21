@@ -4,8 +4,10 @@
   "description": "MySQL query builder",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
-    "test": "tests/index.js"
+    "start": "nodemon examples/index.js",
+    "build": "babel src/index.js -o index.js",
+    "test-node": "tests/node-test.sh",
+    "test": "mocha --recursive tests/unit"
   },
   "repository": {
     "type": "git",
@@ -20,7 +22,15 @@
   "author": "Nikita Zhuravlev <iam@niklucky.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/niklucky/mysql-query-builder/issues"
+    "url": "https://github.com/niklucky/mysql-query-builder/issues",
+    "email": "iam@niklucky.com"
   },
-  "homepage": "https://github.com/niklucky/mysql-query-builder#readme"
+  "homepage": "https://github.com/niklucky/mysql-query-builder#readme",
+  "engines": {
+    "node": ">=4.1.2 =<6.3"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.9.0",
+    "chai": "^3.5.0"
+  }
 }

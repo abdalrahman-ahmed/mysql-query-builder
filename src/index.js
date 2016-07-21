@@ -8,11 +8,13 @@ const TYPE_UPDATE = 'update';
 const TYPE_DELETE = 'delete';
 
 class MySQLQueryBuilder {
-  constructor() {
+  constructor(dbConnection) {
+    this._dbConnection = dbConnection;
+
     this._table = null;
     this._queryType = null;
     this._fields = null;
-    this._values = {};
+    this._values = null;
     this._from = null;
     this._where = [];
     this._like = null;
@@ -26,6 +28,19 @@ class MySQLQueryBuilder {
     this.queries = [];
   }
 
+  query(){
+    if(this.dbConnection != null){
+      return new Promise((resolve, reject) => {
+        this.dbConnection.query(query, (error, rows, fields) => {
+          if (error) {
+            return reject(error);
+          }
+          resolve(rows);
+        });
+      })
+    }
+  }
+
   lastQuery() {
     return this.queries.query;
   }
@@ -34,15 +49,19 @@ class MySQLQueryBuilder {
     return this.queries;
   }
 
+  setTable(table){
+    this._table = table;
+    return this;
+  }
   select(fields = null) {
-    this._queryType = 'select';
+    this._queryType = TYPE_SELECT;
     this._fields = fields;
     return this;
   }
 
   insert(table, fields, data){
     this._table = table;
-    this._queryType = 'insert';
+    this._queryType = TYPE_INSERT;
     this._fields = fields;
 
     if(data === undefined){
@@ -50,6 +69,31 @@ class MySQLQueryBuilder {
       data = fields;
     }
     this._values = data;
+    return this;
+  }
+
+  update(){
+    this._queryType = TYPE_UPDATE;
+
+    if(arguments.length == 2){
+      this.setTable(arguments[0]);
+      this._values = arguments[1];
+      return this;
+    }
+    this._values = arguments[0];
+    return this;
+  }
+  delete(table){
+    this._queryType = TYPE_DELETE;
+
+    if(arguments.length === 2){
+      this.setTable(arguments[0]);
+      this._where = arguments[1];
+      return this;
+    }
+    if(arguments.length === 1){
+      this.setTable(arguments[0]);
+    }
     return this;
   }
 
@@ -172,11 +216,23 @@ class MySQLQueryBuilder {
   }
 
   buildUpdateSQL(){
-
+    const where = this.buildWhere();
+    let SQL = "UPDATE " + this._table + " SET ";
+    let _set = [];
+    for( let key in this._values){
+      if (!this._values.hasOwnProperty(key)) {
+        continue;
+      }
+      _set.push('`' + key + '`=\'' + this._values[key] + '\'');
+    }
+    SQL += _set.join(',');
+    SQL += " WHERE " + where;
+    return this.afterBuild(SQL);
   }
 
   buildDeleteSQL(){
-
+    let SQL = "DELETE FROM " + this._table + " WHERE " + this.buildWhere();
+    return this.afterBuild(SQL);
   }
 
   buildSelectSQL() {
@@ -379,7 +435,7 @@ class MySQLQueryBuilder {
   }
 
   resetQueryParams() {
-    this._where = null;
+    this._where = [];
     this._from = null;
     this._join = null;
     this._fields = null;

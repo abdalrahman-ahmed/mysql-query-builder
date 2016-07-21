@@ -1,5 +1,9 @@
 # MySQL Query builder
 Designed to make SQL-queries easier to use. With this builder you don't have to write raw-queries.
+In this version you can build simple SQL-queries:
+SELECT (with joins), CREATE, UPDATE, DELETE.
+
+This project is my pet project. So you can use it as is. 
 
 ## Usage example
 ```
