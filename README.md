@@ -3,7 +3,7 @@ Designed to make SQL-queries easier to use. With this builder you don't have to 
 In this version you can build simple SQL-queries:
 SELECT (with joins), CREATE, UPDATE, DELETE.
 
-This project is my pet project. So you can use it as is. 
+This project is my pet project. So you can use it as is.
 
 ## Usage example
 ```
@@ -93,7 +93,4 @@ npm install --save mysql-query-builder
 ```
 
 ## Tests
-To run tests:
-```
-node node_modules/mysql-query-builder/tests
-```
+To run tests — where they are belong (tests/unit folder).

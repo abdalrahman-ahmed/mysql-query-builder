@@ -1,9 +1,15 @@
 var assert = require('chai').assert;
-describe('Array', function() {
-  describe('#indexOf()', function() {
-    it('should return -1 when the value is not present', function() {
-      assert.equal(-1, [1,2,3].indexOf(5));
-      assert.equal(-1, [1,2,3].indexOf(0));
+var mqb = require('../../index.js');
+var mocks = require('./mocks.js');
+//var sql = mqb.select('id, name').from('my_table').where('id', 5).build();
+//console.log(sql);
+
+describe('MySQL Query builder main queries:', function() {
+  describe('SELECT', function() {
+    var sql = mqb.select('id, name').from('my_table').where('id', 5).build();
+
+    it('SQL should be: ' + mocks.SELECT[1], function() {
+      assert.equal(mocks.SELECT[1], sql);
     });
   });
 });

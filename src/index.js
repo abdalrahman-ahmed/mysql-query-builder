@@ -203,6 +203,8 @@ class MySQLQueryBuilder {
   }
 
   afterBuild(SQL){
+    SQL += ';';
+
     this.setQuery(SQL);
     this.resetQueryParams();
     return SQL;

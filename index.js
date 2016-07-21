@@ -253,6 +253,8 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'afterBuild',
     value: function afterBuild(SQL) {
+      SQL += ';';
+
       this.setQuery(SQL);
       this.resetQueryParams();
       return SQL;
