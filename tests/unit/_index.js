@@ -1,4 +1,5 @@
-var assert = require('chai').assert;
+'use strict';
+let assert = require('chai').assert;
 let mqb = require('../../index.js');
 let mqbUnit = new mqb();
 //var mocks = require('./mocks.js');

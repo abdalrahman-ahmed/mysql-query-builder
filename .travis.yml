@@ -1,9 +1,12 @@
 language: node_js
 node_js:
   - "6"
-  - "6.1"
   - "4.4"
+branches:
+  only:
+  - master
 before_script:
   - npm install -g mocha
+  - npm run build
 install:
   - npm install
