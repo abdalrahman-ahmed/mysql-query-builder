@@ -10,20 +10,7 @@ const TYPE_DELETE = 'delete';
 class MySQLQueryBuilder {
   constructor(dbConnection) {
     this._dbConnection = dbConnection;
-
-    this._table = null;
-    this._queryType = null;
-    this._fields = null;
-    this._values = null;
-    this._where = [];
-    this._like = null;
-
-    this._join = [];
-    this._limit = null;
-    this._orderBy = null;
-    this._groupBy = null;
-
-    this.dbQuery = null;
+    this.reset();
     this.queries = [];
   }
 
@@ -112,11 +99,17 @@ class MySQLQueryBuilder {
   }
 
   from(from) {
+    if(typeof from !== 'string'){
+      throw new Error("From: Table is undefined");
+    }
     this.setTable(from);
     return this;
   }
 
   where(key, value) {
+    if( key === undefined && value === undefined){
+      throw new Error("Where: nor key neither value is specified");
+    }
     if (typeof key === 'object') {
       return this.whereObject(key);
     }
@@ -129,6 +122,9 @@ class MySQLQueryBuilder {
   }
 
   whereObject(object) {
+    if(typeof object !== 'object'){
+      throw new Error("Where: expected object got undefined");
+    }
     for (var key in object) {
       if (!object.hasOwnProperty(key)) {
         continue;
@@ -144,6 +140,12 @@ class MySQLQueryBuilder {
   }
 
   whereOR(key, value) {
+    if( key === undefined && value === undefined){
+      throw new Error("Where OR: nor key neither value is specified");
+    }
+    if(value === undefined){
+      throw new Error("Where OR: value is undefined");
+    }
     this._where.push({
       key:key,
       value: value,
@@ -222,7 +224,7 @@ class MySQLQueryBuilder {
     SQL += ';';
 
     this.setQuery(SQL);
-    this.resetQueryParams();
+    this.reset();
     return SQL;
   }
 
@@ -257,7 +259,7 @@ class MySQLQueryBuilder {
     let params = this.collectParams();
     let where = "";
 
-    if (this._where !== null || this._like !== null) {
+    if (this._where.length > 0 || this._like.length > 0) {
       where = this.buildWhere() + this.buildLike();
       if( where){
         where = " WHERE " + where;
@@ -333,7 +335,7 @@ class MySQLQueryBuilder {
 
   buildLike() {
     let SQL = "";
-    if (this._like) {
+    if (this._like.length > 0) {
       for (var i in this._like) {
         if (!this._where.hasOwnProperty(i)) {
           continue;
@@ -453,7 +455,7 @@ class MySQLQueryBuilder {
     });
   }
 
-  resetQueryParams() {
+  reset() {
     this._where = [];
     this._table = null;
     this._join = [];
@@ -463,7 +465,7 @@ class MySQLQueryBuilder {
     this._groupBy = null;
     this._queryType = null;
     this._limit = null;
-    this._like = null;
+    this._like = [];
   }
 }
 

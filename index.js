@@ -18,20 +18,7 @@ var MySQLQueryBuilder = function () {
     _classCallCheck(this, MySQLQueryBuilder);
 
     this._dbConnection = dbConnection;
-
-    this._table = null;
-    this._queryType = null;
-    this._fields = null;
-    this._values = null;
-    this._where = [];
-    this._like = null;
-
-    this._join = [];
-    this._limit = null;
-    this._orderBy = null;
-    this._groupBy = null;
-
-    this.dbQuery = null;
+    this.reset();
     this.queries = [];
   }
 
@@ -145,12 +132,18 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'from',
     value: function from(_from) {
+      if (typeof _from !== 'string') {
+        throw new Error("From: Table is undefined");
+      }
       this.setTable(_from);
       return this;
     }
   }, {
     key: 'where',
     value: function where(key, value) {
+      if (key === undefined && value === undefined) {
+        throw new Error("Where: nor key neither value is specified");
+      }
       if ((typeof key === 'undefined' ? 'undefined' : _typeof(key)) === 'object') {
         return this.whereObject(key);
       }
@@ -164,6 +157,9 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'whereObject',
     value: function whereObject(object) {
+      if ((typeof object === 'undefined' ? 'undefined' : _typeof(object)) !== 'object') {
+        throw new Error("Where: expected object got undefined");
+      }
       for (var key in object) {
         if (!object.hasOwnProperty(key)) {
           continue;
@@ -180,6 +176,12 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'whereOR',
     value: function whereOR(key, value) {
+      if (key === undefined && value === undefined) {
+        throw new Error("Where OR: nor key neither value is specified");
+      }
+      if (value === undefined) {
+        throw new Error("Where OR: value is undefined");
+      }
       this._where.push({
         key: key,
         value: value,
@@ -273,7 +275,7 @@ var MySQLQueryBuilder = function () {
       SQL += ';';
 
       this.setQuery(SQL);
-      this.resetQueryParams();
+      this.reset();
       return SQL;
     }
   }, {
@@ -318,7 +320,7 @@ var MySQLQueryBuilder = function () {
       var params = this.collectParams();
       var where = "";
 
-      if (this._where !== null || this._like !== null) {
+      if (this._where.length > 0 || this._like.length > 0) {
         where = this.buildWhere() + this.buildLike();
         if (where) {
           where = " WHERE " + where;
@@ -387,7 +389,7 @@ var MySQLQueryBuilder = function () {
     key: 'buildLike',
     value: function buildLike() {
       var SQL = "";
-      if (this._like) {
+      if (this._like.length > 0) {
         for (var i in this._like) {
           if (!this._where.hasOwnProperty(i)) {
             continue;
@@ -517,8 +519,8 @@ var MySQLQueryBuilder = function () {
       });
     }
   }, {
-    key: 'resetQueryParams',
-    value: function resetQueryParams() {
+    key: 'reset',
+    value: function reset() {
       this._where = [];
       this._table = null;
       this._join = [];
@@ -528,7 +530,7 @@ var MySQLQueryBuilder = function () {
       this._groupBy = null;
       this._queryType = null;
       this._limit = null;
-      this._like = null;
+      this._like = [];
     }
   }]);
 
