@@ -10,3 +10,7 @@ before_script:
 install:
   - npm install
   - npm publish
+deploy:
+  provider: npm
+  email: "iam@niklucky.com"
+  api_key: "7eabae90-995a-4d36-ba60-a1fb05697e11"
