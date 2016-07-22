@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - "6"
+  - "6.1"
+  - "4.4"
+before_script:
+  - npm install -g mocha
+install:
+  - npm install
