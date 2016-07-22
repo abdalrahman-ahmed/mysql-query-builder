@@ -1,5 +1,5 @@
 {
-  "name": "mysql-query-builder",
+  "name": "mysql-qb",
   "version": "0.1.0",
   "description": "MySQL query builder",
   "main": "index.js",
