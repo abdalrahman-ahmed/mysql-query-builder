@@ -15,11 +15,10 @@ class MySQLQueryBuilder {
     this._queryType = null;
     this._fields = null;
     this._values = null;
-    this._from = null;
     this._where = [];
     this._like = null;
 
-    this._join = null;
+    this._join = [];
     this._limit = null;
     this._orderBy = null;
     this._groupBy = null;
@@ -98,7 +97,7 @@ class MySQLQueryBuilder {
   }
 
   from(from) {
-    this._from = from;
+    this.setTable(from);
     return this;
   }
 
@@ -130,9 +129,11 @@ class MySQLQueryBuilder {
   }
 
   whereOR(key, value) {
-    this._where.push(
-      [key, value, true]
-    );
+    this._where.push({
+      key:key,
+      value: value,
+      or: true
+    });
     return this;
   }
 
@@ -282,8 +283,9 @@ class MySQLQueryBuilder {
         }
 
         var sign = "=";
-        if (expression.key.indexOf('=') !== -1) {
-          sign = "";
+        if (expression.key.indexOf('!=') !== -1) {
+          sign = "!=";
+          expression.key = expression.key.replace('!=', '').trim();
         }
 
         if (typeof expression.value === 'object') {
@@ -358,7 +360,7 @@ class MySQLQueryBuilder {
           continue;
         }
         let expression = this._join[i];
-        SQL += "\n" + expression.type +
+        SQL += expression.type +
           " JOIN " + expression.table +
           " ON " + expression.on;
       }
@@ -394,7 +396,7 @@ class MySQLQueryBuilder {
   }
 
   collectParams() {
-    let from = this._from;
+    let from = this._table;
     if (!from) {
       throw Error("You need to specify table");
     }
@@ -438,8 +440,8 @@ class MySQLQueryBuilder {
 
   resetQueryParams() {
     this._where = [];
-    this._from = null;
-    this._join = null;
+    this._table = null;
+    this._join = [];
     this._fields = null;
     this._values = null;
     this._orderBy = null;

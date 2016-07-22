@@ -23,11 +23,10 @@ var MySQLQueryBuilder = function () {
     this._queryType = null;
     this._fields = null;
     this._values = null;
-    this._from = null;
     this._where = [];
     this._like = null;
 
-    this._join = null;
+    this._join = [];
     this._limit = null;
     this._orderBy = null;
     this._groupBy = null;
@@ -132,7 +131,7 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'from',
     value: function from(_from) {
-      this._from = _from;
+      this.setTable(_from);
       return this;
     }
   }, {
@@ -167,7 +166,11 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'whereOR',
     value: function whereOR(key, value) {
-      this._where.push([key, value, true]);
+      this._where.push({
+        key: key,
+        value: value,
+        or: true
+      });
       return this;
     }
   }, {
@@ -336,8 +339,9 @@ var MySQLQueryBuilder = function () {
           }
 
           var sign = "=";
-          if (expression.key.indexOf('=') !== -1) {
-            sign = "";
+          if (expression.key.indexOf('!=') !== -1) {
+            sign = "!=";
+            expression.key = expression.key.replace('!=', '').trim();
           }
 
           if (_typeof(expression.value) === 'object') {
@@ -412,7 +416,7 @@ var MySQLQueryBuilder = function () {
             continue;
           }
           var expression = this._join[i];
-          SQL += "\n" + expression.type + " JOIN " + expression.table + " ON " + expression.on;
+          SQL += expression.type + " JOIN " + expression.table + " ON " + expression.on;
         }
       }
       return SQL;
@@ -451,7 +455,7 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'collectParams',
     value: function collectParams() {
-      var from = this._from;
+      var from = this._table;
       if (!from) {
         throw Error("You need to specify table");
       }
@@ -502,8 +506,8 @@ var MySQLQueryBuilder = function () {
     key: 'resetQueryParams',
     value: function resetQueryParams() {
       this._where = [];
-      this._from = null;
-      this._join = null;
+      this._table = null;
+      this._join = [];
       this._fields = null;
       this._values = null;
       this._orderBy = null;
@@ -518,3 +522,5 @@ var MySQLQueryBuilder = function () {
 }();
 
 module.exports = new MySQLQueryBuilder();
+
+//# sourceMappingURL=index.js.map
