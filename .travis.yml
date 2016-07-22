@@ -9,7 +9,6 @@ before_script:
   - npm run build
 install:
   - npm install
-  - npm publish
 deploy:
   provider: npm
   email: "iam@niklucky.com"
