@@ -7,7 +7,7 @@
     "start": "nodemon examples/index.js",
     "build": "babel src/index.js -o index.js --source-maps",
     "test-node": "tests/node-test.sh",
-    "test": "mocha --recursive tests/unit"
+    "test": "mocha --recursive tests"
   },
   "repository": {
     "type": "git",

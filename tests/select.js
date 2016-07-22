@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var mqb = require('../../index.js');
+var mqb = require('../index.js');
 var mocks = require('./mocks.js');
 
 var SQL = "";
