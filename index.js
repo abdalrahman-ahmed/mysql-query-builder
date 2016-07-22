@@ -191,8 +191,10 @@ var MySQLQueryBuilder = function () {
     }
   }, {
     key: 'like',
-    value: function like(field, query, type) {
+    value: function like(field, query) {
+      var type = arguments.length <= 2 || arguments[2] === undefined ? 'both' : arguments[2];
       var or = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
 
       this._like.push({
         field: field,
@@ -213,6 +215,9 @@ var MySQLQueryBuilder = function () {
     value: function join(table, on) {
       var type = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
 
+      if (typeof table !== 'string' || typeof on !== 'string') {
+        throw new Error("JOIN: you need to specify TABLE and ON for join");
+      }
       this._join.push({
         table: table,
         on: on,

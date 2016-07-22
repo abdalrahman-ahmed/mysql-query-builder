@@ -154,7 +154,8 @@ class MySQLQueryBuilder {
     return this;
   }
 
-  like(field, query, type, or = false) {
+  like(field, query, type = 'both', or = false) {
+
     this._like.push({
       field: field,
       query: query,
@@ -170,6 +171,9 @@ class MySQLQueryBuilder {
   }
 
   join(table, on, type = '') {
+    if(typeof table !== 'string' || typeof on !== 'string'){
+      throw new Error("JOIN: you need to specify TABLE and ON for join");
+    }
     this._join.push({
       table: table,
       on: on,
