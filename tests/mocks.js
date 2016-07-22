@@ -11,6 +11,7 @@ module.exports = {
     9: "SELECT id, name FROM table1  WHERE `id`=5 AND `name`='Nik' OR `title`='Lucky' LIMIT 0, 1000;",
     10: "SELECT id, name FROM table1  WHERE `name`!='Lucky' LIMIT 0, 1000;",
     11: "SELECT id, name FROM table1  LIMIT 0, 100;",
-    12: "SELECT id, name FROM table1  LIMIT 0, 1000;"
+    12: "SELECT id, name FROM table1  LIMIT 0, 1000;",
+    13: "SELECT id, name FROM table1  ORDER BY name asc LIMIT 0, 100;"
   }
 }

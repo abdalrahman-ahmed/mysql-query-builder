@@ -7,6 +7,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var DEFAULT_LIMIT = 1000;
+var DEFAULT_ORDER = 'ASC';
 
 var TYPE_SELECT = 'select';
 var TYPE_INSERT = 'insert';
@@ -227,21 +228,37 @@ var MySQLQueryBuilder = function () {
     }
   }, {
     key: 'limit',
-    value: function limit(start, _limit) {
+    value: function limit() {
+      var start = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+      var _limit = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_LIMIT : arguments[1];
+
       this._limit = [start, _limit];
       return this;
     }
   }, {
     key: 'orderBy',
     value: function orderBy(orderFields) {
-      var order = arguments.length <= 1 || arguments[1] === undefined ? 'ASC' : arguments[1];
+      var order = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_ORDER : arguments[1];
 
-      this._orderBy = [orderFields, order];
+      if (Array.isArray(orderFields)) {
+        orderFields = orderFields.join(',');
+      }
+      if (typeof orderFields !== 'string') {
+        throw new Error("ORDER BY: fields must be string or array");
+      }
+      this._orderBy.push({
+        fields: orderFields,
+        order: order
+      });
       return this;
     }
   }, {
     key: 'groupBy',
     value: function groupBy(fields) {
+      if (typeof fields !== 'string') {
+        throw new Error("GROUP BY: fields must be string");
+      }
       this._groupBy = fields;
       return this;
     }
@@ -460,8 +477,12 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'buildOrderBy',
     value: function buildOrderBy() {
-      if (this._orderBy) {
-        return " ORDER BY " + this._orderBy[0] + " " + this._orderBy[1];
+      if (this._orderBy.length > 0) {
+        var SQL = " ORDER BY ";
+        var fields = this._orderBy.map(function (order) {
+          return order.fields + ' ' + order.order;
+        });
+        return SQL + fields.join(',');
       }
       return "";
     }
@@ -531,7 +552,7 @@ var MySQLQueryBuilder = function () {
       this._join = [];
       this._fields = null;
       this._values = null;
-      this._orderBy = null;
+      this._orderBy = [];
       this._groupBy = null;
       this._queryType = null;
       this._limit = null;

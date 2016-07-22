@@ -35,7 +35,8 @@ describe('Checking default properties', function() {
     assert.equal(mqbUnit._limit, null);
   });
   it('_orderBy', function() {
-    assert.equal(mqbUnit._orderBy, null);
+    assert(Array.isArray(mqbUnit._orderBy), 'is array');
+    assert.equal(mqbUnit._orderBy.length, 0);
   });
   it('_groupBy', function() {
     assert.equal(mqbUnit._groupBy, null);

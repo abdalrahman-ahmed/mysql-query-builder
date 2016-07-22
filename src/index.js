@@ -1,6 +1,7 @@
 "use strict";
 
 const DEFAULT_LIMIT = 1000;
+const DEFAULT_ORDER = 'ASC';
 
 const TYPE_SELECT = 'select';
 const TYPE_INSERT = 'insert';
@@ -182,17 +183,29 @@ class MySQLQueryBuilder {
     return this;
   }
 
-  limit(start, limit) {
+  limit(start = 0, limit = DEFAULT_LIMIT ) {
     this._limit = [start, limit];
     return this;
   }
 
-  orderBy(orderFields, order = 'ASC') {
-    this._orderBy = [orderFields, order];
+  orderBy(orderFields, order = DEFAULT_ORDER) {
+    if(Array.isArray(orderFields)){
+      orderFields = orderFields.join(',');
+    }
+    if( typeof orderFields !== 'string'){
+      throw new Error("ORDER BY: fields must be string or array");
+    }
+    this._orderBy.push({
+      fields: orderFields,
+      order: order
+    });
     return this;
   }
 
   groupBy(fields) {
+    if(typeof fields !== 'string'){
+      throw new Error("GROUP BY: fields must be string");
+    }
     this._groupBy = fields;
     return this;
   }
@@ -403,8 +416,10 @@ class MySQLQueryBuilder {
   }
 
   buildOrderBy() {
-    if (this._orderBy) {
-      return " ORDER BY " + this._orderBy[0] + " " + this._orderBy[1];
+    if (this._orderBy.length > 0) {
+      let SQL = " ORDER BY "
+      let fields = this._orderBy.map( order => { return order.fields + ' ' + order.order } );
+      return SQL + fields.join(',');
     }
     return "";
   }
@@ -465,7 +480,7 @@ class MySQLQueryBuilder {
     this._join = [];
     this._fields = null;
     this._values = null;
-    this._orderBy = null;
+    this._orderBy = [];
     this._groupBy = null;
     this._queryType = null;
     this._limit = null;

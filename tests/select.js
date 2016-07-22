@@ -94,4 +94,11 @@ describe('SELECT', function() {
     assert.equal(mocks.SELECT[12], sql);
   });
 
+  it('ORDER BY: ' + mocks.SELECT[13], function() {
+    var sql = mqb.select('id, name').from('table1')
+      .limit(0, 100)
+      .orderBy('name', 'asc')
+      .build();
+    assert.equal(mocks.SELECT[13], sql);
+  });
 });
