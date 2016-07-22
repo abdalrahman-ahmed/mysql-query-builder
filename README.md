@@ -1,4 +1,7 @@
 # MySQL Query builder
+[![Build Status](https://travis-ci.org/niklucky/mysql-query-builder.svg?branch=master)](https://travis-ci.org/niklucky/mysql-query-builder)
+[![npm version](https://img.shields.io/npm/v/mysql-qb.svg?style=flat-square)](https://www.npmjs.com/package/mysql-qb)
+
 Designed to make SQL-queries easier to use. With this builder you don't have to write raw-queries.
 In this version you can build simple SQL-queries:
 SELECT (with joins), CREATE, UPDATE, DELETE.
