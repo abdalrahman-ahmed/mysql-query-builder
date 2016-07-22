@@ -1,5 +1,6 @@
 var assert = require('chai').assert;
-var mqb = require('../index.js');
+var MySQLQueryBuilder = require('../index.js');
+var mqb = new MySQLQueryBuilder();
 var mocks = require('./mocks.js');
 
 var SQL = "";

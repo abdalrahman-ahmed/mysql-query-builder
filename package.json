@@ -1,11 +1,11 @@
 {
   "name": "mysql-qb",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "MySQL query builder",
   "main": "index.js",
   "scripts": {
     "start": "nodemon examples/index.js",
-    "build": "babel src/index.js -o index.js --source-maps",
+    "build": "babel src/index.js -o index.js",
     "test-node": "tests/node-test.sh",
     "test": "mocha --recursive tests"
   },

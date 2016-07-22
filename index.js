@@ -89,13 +89,20 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'insert',
     value: function insert(table, fields, data) {
+      if (table === undefined) {
+        throw new Error("Table is undefined");
+      }
       this._table = table;
       this._queryType = TYPE_INSERT;
       this._fields = fields;
 
       if (data === undefined) {
-        this._fields = Object.keys(fields);
         data = fields;
+
+        if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) !== 'object') {
+          throw new Error("Insert data is empty");
+        }
+        this._fields = Object.keys(fields);
       }
       this._values = data;
       return this;
@@ -103,6 +110,9 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'update',
     value: function update() {
+      if (arguments.length === 0) {
+        throw new Error("Update: Data is undefined");
+      }
       this._queryType = TYPE_UPDATE;
 
       if (arguments.length == 2) {
@@ -110,12 +120,16 @@ var MySQLQueryBuilder = function () {
         this._values = arguments[1];
         return this;
       }
+
+      if (_typeof(arguments[0]) !== 'object') {
+        throw new Error("Update: Data is undefined");
+      }
       this._values = arguments[0];
       return this;
     }
   }, {
     key: 'delete',
-    value: function _delete(table) {
+    value: function _delete() {
       this._queryType = TYPE_DELETE;
 
       if (arguments.length === 2) {
@@ -521,6 +535,4 @@ var MySQLQueryBuilder = function () {
   return MySQLQueryBuilder;
 }();
 
-module.exports = new MySQLQueryBuilder();
-
-//# sourceMappingURL=index.js.map
+module.exports = MySQLQueryBuilder;
