@@ -71,11 +71,11 @@ describe('insert', function() {
   });
 
   it('insert (table, data == undefined) throwing error', function() {
-    expect(() => { mqb.insert('table1'); }).to.throw("Insert data is empty");
+    expect(() => { mqb.insert('table1'); }).to.throw("Insert: table is not provided");
   });
 
   it('insert (table == undefined) throwing error', function() {
-    expect(() => { mqb.insert(); }).to.throw("Table is undefined");
+    expect(() => { mqb.insert(); }).to.throw("Insert: data is not provided");
   });
 });
 
@@ -92,9 +92,9 @@ describe('insert', function() {
     });
 
     it('update (data) - no table set', function() {
+      mqb.setTable('table1');
       const obj = mqb.update({ id: 1, name: 'Nik' });
       assert.equal(mqb._queryType, 'update');
-      assert.equal(mqb._table, null);
 
       assert(typeof mqb._values === 'object', 'is object');
       assert.equal(Object.keys(mqb._values).length, 2);
@@ -117,11 +117,11 @@ describe('insert', function() {
     });
 
     it('update (table, data == undefined) throwing error', function() {
-      expect(() => { mqb.update('table1'); }).to.throw("Update: Data is undefined");
+      expect(() => { mqb.update('table1'); }).to.throw("Update: Table is undefined");
     });
 
     it('update (table == undefined, data == undefined) throwing error', function() {
-      expect(() => { mqb.update(); }).to.throw("Update: Data is undefined");
+      expect(() => { mqb.update(); }).to.throw("Update: Table is undefined");
     });
   });
 
@@ -132,7 +132,9 @@ describe('insert', function() {
       assert.equal(mqb._table, 'table1');
       assert(typeof mqb._where === 'object', 'is object');
       assert.equal(Object.keys(mqb._where).length, 1);
-      assert.equal(mqb._where.id, 1);
+      assert.equal(mqb._where[0].key, 'id');
+      assert.equal(mqb._where[0].value, 1);
+      assert.equal(mqb._where[0].or, false);
       assert(obj instanceof MySQLQueryBuilder, 'return this');
     });
 

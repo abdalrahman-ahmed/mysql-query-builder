@@ -14,5 +14,15 @@ module.exports = {
     12: "SELECT id, name FROM table1 LIMIT 0, 1000;",
     13: "SELECT id, name FROM table1 ORDER BY name asc LIMIT 0, 100;",
     14: "SELECT firstName, lastName FROM table2 LIMIT 0, 1000;"
+  },
+  INSERT: {
+    1: "INSERT INTO table1 (`id`,`name`) VALUES ('1','Nik');"
+  },
+  UPDATE: {
+    1: "UPDATE table1 SET `id`='1',`name`='Nik' WHERE ;",
+    2: "UPDATE table1 SET `id`='1',`name`='Nik' WHERE `id`=1;"
+  },
+  DELETE: {
+    1: "DELETE FROM table1 WHERE `id`=1;"
   }
 }

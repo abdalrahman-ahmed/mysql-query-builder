@@ -64,41 +64,76 @@ class MySQLQueryBuilder {
     return this;
   }
 
-  insert(table, fields, data){
-    if(table === undefined){
+  insert(){
+    this._queryType = TYPE_INSERT;
+    let table, fields, data = undefined;
+
+    if( arguments.length === 0){
+      throw new Error("Insert: data is not provided");
+    }
+
+    if( arguments.length === 1){
+      if(this._table === null){
+        throw new Error("Insert: table is not provided");
+      }
+      this._values = arguments[0];
+    }
+
+    if( arguments.length === 2){
+      this._table = arguments[0];
+      this._values = arguments[1];
+    }
+    if( arguments.length === 3){
+      this._table = arguments[0];
+      this._fields = arguments[1];
+      this._values = arguments[2];
+    }
+
+    if(typeof this._table !== 'string'){
       throw new Error("Table is undefined");
     }
-    this._table = table;
-    this._queryType = TYPE_INSERT;
-    this._fields = fields;
 
-    if(data === undefined){
-      data = fields;
-
-      if(typeof data !== 'object'){
-        throw new Error("Insert data is empty");
-      }
-      this._fields = Object.keys(fields);
+    if(typeof this._values !== 'object'){
+      throw new Error("Insert data is empty");
     }
-    this._values = data;
+
+    if(this._fields === null){
+      this._fields = Object.keys(this._values)
+    }
+
     return this;
   }
 
   update(){
     if(arguments.length === 0){
+      if(typeof this._table !== 'string'){
+        throw new Error("Update: Table is undefined");
+      }
       throw new Error("Update: Data is undefined");
     }
-    this._queryType = TYPE_UPDATE;
-
-    if(arguments.length == 2){
+    if(arguments.length === 2){
       this.setTable(arguments[0]);
+      if( typeof this._table !== 'string'){
+        throw new Error("Update: Table is undefined");
+      }
+      if( typeof arguments[1] !== 'object'){
+        throw new Error("Update: Data is not object");
+      }
+
+      this._queryType = TYPE_UPDATE;
       this._values = arguments[1];
       return this;
+    }
+
+    if( typeof this._table !== 'string'){
+      throw new Error("Update: Table is undefined");
     }
 
     if(typeof arguments[0] !== 'object'){
       throw new Error("Update: Data is undefined");
     }
+
+    this._queryType = TYPE_UPDATE;
     this._values = arguments[0];
     return this;
   }
@@ -108,10 +143,21 @@ class MySQLQueryBuilder {
 
     if(arguments.length === 2){
       this.setTable(arguments[0]);
-      this._where = arguments[1];
+      if( typeof arguments[1] === 'object'){
+        for( var i in arguments[1]){
+          this._where.push({
+            key: i,
+            value: arguments[1][i],
+            or: false
+          });
+        }
+      }
       return this;
     }
     if(arguments.length === 1){
+      if(typeof arguments[0] !== 'string'){
+        throw new Error("Delete: Table is undefined");
+      }
       this.setTable(arguments[0]);
     }
     return this;
@@ -262,7 +308,7 @@ class MySQLQueryBuilder {
   buildInsertSQL(){
     const keys = this._fields.map( key => ( '`' + key + '`' ) ).join(',');
     const values = this._fields.map( key => ( '\'' + this._values[key] + '\'' ) ).join(',');
-    let SQL = 'INSERT INTO ' + this._table + '(' + keys + ') VALUES (' + values + ')';
+    let SQL = 'INSERT INTO ' + this._table + ' (' + keys + ') VALUES (' + values + ')';
     return this.afterBuild(SQL);
   }
 

@@ -13,7 +13,7 @@ SELECT (with joins), CREATE, UPDATE, DELETE.
 * Examples (soon)
 
 ## Usage example
-```
+```javascript
 var conn = require('mysql');
 conn.connect();
 
@@ -29,7 +29,7 @@ conn.query(SQL, function(error, rows){
 ```
 
 ## Commands (soon)
-Order of commands in pipeline doesn't matter. They all return ```this``` so you can use them *UNTIL* ```build()``` method is called. After that query is immutable.
+Order of commands in pipeline doesn't matter. They all return ```this``` so you can use them *UNTIL* `build()` method is called. After that query is immutable.
 
 Method ```build()``` returns a string and pushes last query in queries array, so you can always get it by ```lastQuery()``` call.
 
@@ -42,7 +42,7 @@ Next you specify fields by ```select(FIELDS)```. Fields could be an array ```['i
 Also you can use some joins: ```join()``` ('left', 'right', 'inner') or simply without modifier.
 
 ** Examples **
-```
+```javascript
 var SQL = qb.select('id, name, st.email')
             .from('my_table as mt')
             .join('second_table as st', 'st.id=mt.id')
@@ -57,7 +57,7 @@ var SQL = qb.select('id, name, st.email')
 ```
 
 ### INSERT
-```
+```javascript
 var SQL = db.insert(
             'my_table',
             ['id', 'name'],
@@ -78,12 +78,12 @@ var SQL = db.insert({ id: 1, name: 'Steve'}).build();
 ```
 
 ### UPDATE
-```
+```javascript
 var SQL = qb.update('my_table', { id: 1, name: 'Steve'}).build();
 ```
 
 ### DELETE
-```
+```javascript
 var SQL = qb.delete('my_table', { id: 1}).build();
 
 // or
@@ -92,7 +92,7 @@ var SQL = qb.delete('my_table').where({id: 1}).build();
 
 
 ## Installation
-```
+```bash
 npm install --save mysql-query-builder
 ```
 
