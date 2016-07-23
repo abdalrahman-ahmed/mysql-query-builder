@@ -9,7 +9,8 @@
     "watch": "babel -w src/index.js -o index.js",
     "test-node": "tests/node-test.sh",
     "test-watch": "mocha -w --recursive tests",
-    "test": "mocha --recursive tests"
+    "test": "mocha --recursive tests",
+    "coverage": "istanbul cover _mocha -- --recursive tests"
   },
   "repository": {
     "type": "git",

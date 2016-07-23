@@ -7,15 +7,24 @@ const TYPE_SELECT = 'select';
 const TYPE_INSERT = 'insert';
 const TYPE_UPDATE = 'update';
 const TYPE_DELETE = 'delete';
-
+/** Class representing a MySQLQueryBuilder. */
 class MySQLQueryBuilder {
-
-  constructor(dbConnection) {
+  /**
+   * Initializing config and connections. It is optional
+   * Resets all fields
+   * @param {object} db - MySQL connection object or simple config object in format of node mysql
+   */
+  constructor(db) {
     this._dbConnection = dbConnection;
     this.reset();
     this.queries = [];
   }
 
+  /**
+   * Executes a passed query or gets query from getLastQuery
+   * @param {string} query - Optional. The string containing SQL-query.
+   * @return {Promise} A new Promise object or a null
+   */
   exec(query){
     if(this.dbConnection != null){
       return new Promise((resolve, reject) => {
@@ -39,6 +48,7 @@ class MySQLQueryBuilder {
         });
       })
     }
+    return null;
   }
 
   getLastQuery() {
