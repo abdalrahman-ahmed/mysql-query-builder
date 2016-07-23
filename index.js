@@ -287,11 +287,14 @@ var MySQLQueryBuilder = function () {
         return this.buildDeleteSQL();
       }
 
-      return Error("Query type is not supported");
+      throw new Error("Query type " + this._queryType + " is not supported");
     }
   }, {
     key: 'afterBuild',
     value: function afterBuild(SQL) {
+      if (typeof SQL !== 'string') {
+        throw new Error("After build: SQL is not string. " + SQL);
+      }
       SQL += ';';
 
       this.setQuery(SQL);
@@ -346,8 +349,6 @@ var MySQLQueryBuilder = function () {
           where = " WHERE " + where;
         }
       }
-
-      this.checkLimit();
 
       var SQL = "SELECT " + params.fields + " " + "FROM " + params.from + this.buildJoin() + where + this.buildOrderBy() + this.buildGroupBy() + this.buildLimit();
 
@@ -411,11 +412,10 @@ var MySQLQueryBuilder = function () {
       var SQL = "";
       if (this._like.length > 0) {
         for (var i in this._like) {
-          if (!this._where.hasOwnProperty(i)) {
+          if (!this._like.hasOwnProperty(i)) {
             continue;
           }
           var expression = this._like[i];
-
           if (SQL !== "") {
             if (expression.or) {
               SQL += " OR ";
@@ -433,9 +433,9 @@ var MySQLQueryBuilder = function () {
             value += "%";
           }
 
-          SQL += "{expression['field']} LIKE '" + value + "'";
+          SQL += expression['field'] + " LIKE '" + value + "'";
         }
-        if (this._where) {
+        if (this._where.length > 0) {
           SQL = " AND " + SQL;
         }
       }
@@ -445,29 +445,22 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'buildJoin',
     value: function buildJoin() {
-      var SQL = " ";
-      if (this._join) {
+      var SQL = "";
+      if (this._join.length > 0) {
         for (var i in this._join) {
-          if (!this._where.hasOwnProperty(i)) {
+          if (!this._join.hasOwnProperty(i)) {
             continue;
           }
           var expression = this._join[i];
-          SQL += expression.type + " JOIN " + expression.table + " ON " + expression.on;
+          SQL += " " + expression.type + " JOIN " + expression.table + " ON " + expression.on;
         }
       }
       return SQL;
     }
   }, {
-    key: 'checkLimit',
-    value: function checkLimit() {
-      if (!this._limit) {
-        this.limit(0, DEFAULT_LIMIT);
-      }
-    }
-  }, {
     key: 'buildLimit',
     value: function buildLimit() {
-      if (this._limit) {
+      if (Array.isArray(this._limit)) {
         return " LIMIT " + this._limit[0] + ", " + this._limit[1];
       }
       return "";
@@ -547,7 +540,7 @@ var MySQLQueryBuilder = function () {
       this._orderBy = [];
       this._groupBy = null;
       this._queryType = null;
-      this._limit = null;
+      this._limit = [0, DEFAULT_LIMIT];
       this._like = [];
     }
   }]);

@@ -9,6 +9,7 @@ const TYPE_UPDATE = 'update';
 const TYPE_DELETE = 'delete';
 
 class MySQLQueryBuilder {
+
   constructor(dbConnection) {
     this._dbConnection = dbConnection;
     this.reset();
@@ -56,6 +57,7 @@ class MySQLQueryBuilder {
     this._table = table;
     return this;
   }
+
   select(fields = null) {
     this._queryType = TYPE_SELECT;
     this._fields = fields;
@@ -243,10 +245,13 @@ class MySQLQueryBuilder {
       return this.buildDeleteSQL();
     }
 
-    return Error("Query type is not supported");
+    throw new Error("Query type " + this._queryType + " is not supported");
   }
 
   afterBuild(SQL){
+    if(typeof SQL !== 'string'){
+      throw new Error("After build: SQL is not string. " + SQL);
+    }
     SQL += ';';
 
     this.setQuery(SQL);
@@ -291,8 +296,6 @@ class MySQLQueryBuilder {
         where = " WHERE " + where;
       }
     }
-
-    this.checkLimit();
 
     let SQL =
       "SELECT " + params.fields + " " +
@@ -363,11 +366,10 @@ class MySQLQueryBuilder {
     let SQL = "";
     if (this._like.length > 0) {
       for (var i in this._like) {
-        if (!this._where.hasOwnProperty(i)) {
+        if (!this._like.hasOwnProperty(i)) {
           continue;
         }
         let expression = this._like[i];
-
         if (SQL !== "") {
           if (expression.or) {
             SQL += " OR ";
@@ -385,9 +387,9 @@ class MySQLQueryBuilder {
           value += "%";
         }
 
-        SQL += "{expression['field']} LIKE '" + value + "'";
+        SQL += expression['field'] + " LIKE '" + value + "'";
       }
-      if (this._where) {
+      if (this._where.length > 0) {
         SQL = " AND " + SQL;
       }
     }
@@ -396,14 +398,14 @@ class MySQLQueryBuilder {
   }
 
   buildJoin() {
-    let SQL = " ";
-    if (this._join) {
+    let SQL = "";
+    if (this._join.length > 0) {
       for (var i in this._join) {
-        if (!this._where.hasOwnProperty(i)) {
+        if (!this._join.hasOwnProperty(i)) {
           continue;
         }
         let expression = this._join[i];
-        SQL += expression.type +
+        SQL += " " + expression.type +
           " JOIN " + expression.table +
           " ON " + expression.on;
       }
@@ -411,14 +413,8 @@ class MySQLQueryBuilder {
     return SQL;
   }
 
-  checkLimit(){
-    if( !this._limit){
-      this.limit(0, DEFAULT_LIMIT);
-    }
-  }
-
   buildLimit() {
-    if (this._limit) {
+    if (Array.isArray(this._limit)) {
       return " LIMIT " + this._limit[0] + ", " + this._limit[1];
     }
     return "";
@@ -490,7 +486,7 @@ class MySQLQueryBuilder {
     this._orderBy = [];
     this._groupBy = null;
     this._queryType = null;
-    this._limit = null;
+    this._limit = [0, DEFAULT_LIMIT];
     this._like = [];
   }
 }
