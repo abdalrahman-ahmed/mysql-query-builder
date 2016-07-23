@@ -2,11 +2,15 @@
 [![Build Status](https://travis-ci.org/niklucky/mysql-query-builder.svg?branch=master)](https://travis-ci.org/niklucky/mysql-query-builder)
 [![npm version](https://img.shields.io/npm/v/mysql-qb.svg?style=flat-square)](https://www.npmjs.com/package/mysql-qb)
 
-Designed to make SQL-queries easier to use. With this builder you don't have to write raw-queries.
+> Designed to make SQL-queries easier to use. With this builder you don't have to write raw-queries.
 In this version you can build simple SQL-queries:
 SELECT (with joins), CREATE, UPDATE, DELETE.
 
-This project is my pet project. So you can use it as is.
+> This project is my pet project. So you can use it as is.
+
+## Contents
+* [Methods](https://github.com/niklucky/mysql-query-builder/tree/master/docs/METHODS.md)
+* Examples (soon)
 
 ## Usage example
 ```
@@ -47,7 +51,7 @@ var SQL = qb.select('id, name, st.email')
             .orderBy('tt.id', 'desc')
             .groupBy('tt.name')
             .limit(0, 10)
-            .buildSQL();
+            .build();
 
 // ... Query execution and data processing
 ```
@@ -62,31 +66,28 @@ var SQL = db.insert(
 // Or you can use simplier variant
 var SQL = db.insert(
             'my_table',
-            {id: 1, name: 'Steve'}); // In that case fields will be taken from object idx
+            {id: 1, name: 'Steve'})
+            .build(); // In that case fields will be taken from object idx
 // Or even simplier
 // ... before execution
 qb.setTable('my_table');
 
 // From now on you may call without setting the table
-var SQL = db.insert(
-            {
-              id: 1,
-              name: 'Steve'
-            });
+var SQL = db.insert({ id: 1, name: 'Steve'}).build();
 
 ```
 
 ### UPDATE
 ```
-var SQL = qb.update('my_table', { id: 1, name: 'Steve'});
+var SQL = qb.update('my_table', { id: 1, name: 'Steve'}).build();
 ```
 
 ### DELETE
 ```
-var SQL = qb.delete('my_table', { id: 1});
+var SQL = qb.delete('my_table', { id: 1}).build();
 
 // or
-var SQL = qb.delete('my_table').where({id: 1});
+var SQL = qb.delete('my_table').where({id: 1}).build();
 ```
 
 
