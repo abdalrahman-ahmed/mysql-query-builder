@@ -12,6 +12,7 @@ module.exports = {
     10: "SELECT id, name FROM table1  WHERE `name`!='Lucky' LIMIT 0, 1000;",
     11: "SELECT id, name FROM table1  LIMIT 0, 100;",
     12: "SELECT id, name FROM table1  LIMIT 0, 1000;",
-    13: "SELECT id, name FROM table1  ORDER BY name asc LIMIT 0, 100;"
+    13: "SELECT id, name FROM table1  ORDER BY name asc LIMIT 0, 100;",
+    14: "SELECT firstName, lastName FROM table2  LIMIT 0, 1000;"
   }
 }

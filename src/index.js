@@ -15,21 +15,37 @@ class MySQLQueryBuilder {
     this.queries = [];
   }
 
-  query(){
+  exec(query){
     if(this.dbConnection != null){
       return new Promise((resolve, reject) => {
-        this.dbConnection.query(query, (error, rows, fields) => {
+        if(query === undefined){
+          query = this.getLastQuery();
+        }
+        if(query === null){
+          throw new Error("Exec: No query to execute");
+        }
+        if(typeof query === 'string'){
+          this.setQuery(query);
+          query = this.getLastQuery();
+        }
+        this.dbConnection.query(query.query, (error, rows, fields) => {
+          query.executed = true;
           if (error) {
             return reject(error);
           }
+          console.log('this.getQueries()', this.getQueries());
           resolve(rows);
         });
       })
     }
   }
 
-  lastQuery() {
-    return this.queries.query;
+  getLastQuery() {
+    const queries = this.getQueries();
+    if(queries.length > 0 ){
+      return queries[queries.length-1];
+    }
+    return null;
   }
 
   getQueries() {
@@ -208,13 +224,6 @@ class MySQLQueryBuilder {
     }
     this._groupBy = fields;
     return this;
-  }
-
-  executeLastQuery() {
-    var queries = Object.keys(this.queries);
-    var lastQueryKey = queries;
-    this.queries[lastQueryKey].executed = 1;
-    return this.lastQuery();
   }
 
   build() {
@@ -459,18 +468,16 @@ class MySQLQueryBuilder {
     return this._fields;
   }
 
-  getDbQuery() {
-    return this.dbQuery;
-  }
-
-  setDbQuery(dbQuery) {
-    this.dbQuery = dbQuery;
-    return this;
-  }
-
-  setQuery(SQL, executed = false) {
+  setQuery(SQL) {
+    if(typeof SQL !== 'string'){
+      throw new Error("setQuery: SQL is not a string")
+    }
+    const id = this.getQueries().length + 1;
     this.queries.push({
-      query: SQL, executed: executed, queryTime: 0
+      id: id,
+      query: SQL,
+      executed: false,
+      queryTime: 0
     });
   }
 

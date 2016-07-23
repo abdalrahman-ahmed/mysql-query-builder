@@ -24,35 +24,41 @@ var MySQLQueryBuilder = function () {
   }
 
   _createClass(MySQLQueryBuilder, [{
-    key: 'query',
-    value: function (_query) {
-      function query() {
-        return _query.apply(this, arguments);
-      }
-
-      query.toString = function () {
-        return _query.toString();
-      };
-
-      return query;
-    }(function () {
+    key: 'exec',
+    value: function exec(query) {
       var _this = this;
 
       if (this.dbConnection != null) {
         return new Promise(function (resolve, reject) {
-          _this.dbConnection.query(query, function (error, rows, fields) {
+          if (query === undefined) {
+            query = _this.getLastQuery();
+          }
+          if (query === null) {
+            throw new Error("Exec: No query to execute");
+          }
+          if (typeof query === 'string') {
+            _this.setQuery(query);
+            query = _this.getLastQuery();
+          }
+          _this.dbConnection.query(query.query, function (error, rows, fields) {
+            query.executed = true;
             if (error) {
               return reject(error);
             }
+            console.log('this.getQueries()', _this.getQueries());
             resolve(rows);
           });
         });
       }
-    })
+    }
   }, {
-    key: 'lastQuery',
-    value: function lastQuery() {
-      return this.queries.query;
+    key: 'getLastQuery',
+    value: function getLastQuery() {
+      var queries = this.getQueries();
+      if (queries.length > 0) {
+        return queries[queries.length - 1];
+      }
+      return null;
     }
   }, {
     key: 'getQueries',
@@ -261,14 +267,6 @@ var MySQLQueryBuilder = function () {
       }
       this._groupBy = fields;
       return this;
-    }
-  }, {
-    key: 'executeLastQuery',
-    value: function executeLastQuery() {
-      var queries = Object.keys(this.queries);
-      var lastQueryKey = queries;
-      this.queries[lastQueryKey].executed = 1;
-      return this.lastQuery();
     }
   }, {
     key: 'build',
@@ -525,23 +523,17 @@ var MySQLQueryBuilder = function () {
       return this._fields;
     }
   }, {
-    key: 'getDbQuery',
-    value: function getDbQuery() {
-      return this.dbQuery;
-    }
-  }, {
-    key: 'setDbQuery',
-    value: function setDbQuery(dbQuery) {
-      this.dbQuery = dbQuery;
-      return this;
-    }
-  }, {
     key: 'setQuery',
     value: function setQuery(SQL) {
-      var executed = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-
+      if (typeof SQL !== 'string') {
+        throw new Error("setQuery: SQL is not a string");
+      }
+      var id = this.getQueries().length + 1;
       this.queries.push({
-        query: SQL, executed: executed, queryTime: 0
+        id: id,
+        query: SQL,
+        executed: false,
+        queryTime: 0
       });
     }
   }, {

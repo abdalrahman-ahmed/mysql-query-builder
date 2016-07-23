@@ -1,8 +1,8 @@
 'use strict';
 var assert = require('chai').assert;
-var MySQLQueryBuilder = require('../index.js');
+var MySQLQueryBuilder = require('../../index.js');
 var mqb = new MySQLQueryBuilder();
-var mocks = require('./mocks.js');
+var mocks = require('../mocks.js');
 
 var SQL = "";
 

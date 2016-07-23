@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon examples/index.js",
-    "build": "babel src/index.js -o index.js",
+    "build": "babel -w src/index.js -o index.js",
     "test-node": "tests/node-test.sh",
-    "test": "mocha --recursive tests"
+    "test": "mocha -w --recursive tests"
   },
   "repository": {
     "type": "git",
