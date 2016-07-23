@@ -10,7 +10,6 @@ SELECT (with joins), CREATE, UPDATE, DELETE.
 
 ## Contents
 * [Methods](https://github.com/niklucky/mysql-query-builder/tree/master/docs/METHODS.md)
-* Examples (soon)
 
 ## Usage example
 ```javascript

@@ -13,15 +13,28 @@ var TYPE_SELECT = 'select';
 var TYPE_INSERT = 'insert';
 var TYPE_UPDATE = 'update';
 var TYPE_DELETE = 'delete';
+/** Class representing a MySQLQueryBuilder. */
 
 var MySQLQueryBuilder = function () {
-  function MySQLQueryBuilder(dbConnection) {
+  /**
+   * Initializing config and connections. It is optional
+   * Resets all fields
+   * @param {object} db - MySQL connection object or simple config object in format of node mysql
+   */
+  function MySQLQueryBuilder(db) {
     _classCallCheck(this, MySQLQueryBuilder);
 
-    this._dbConnection = dbConnection;
+    this._dbConnection = db;
     this.reset();
     this.queries = [];
   }
+
+  /**
+   * Executes a passed query or gets query from getLastQuery
+   * @param {string} query - Optional. The string containing SQL-query.
+   * @return {Promise} A new Promise object or a null
+   */
+
 
   _createClass(MySQLQueryBuilder, [{
     key: 'exec',
@@ -50,6 +63,7 @@ var MySQLQueryBuilder = function () {
           });
         });
       }
+      return null;
     }
   }, {
     key: 'getLastQuery',

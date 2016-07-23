@@ -1,5 +1,4 @@
 # Methods
-Also see [Examples](https://github.com/niklucky/mysql-query-builder/docs/EXAMPLES.md)
 
 | Query | Methods | Arguments | Description  |
 | ----- | ------- | -------- | -----------  |

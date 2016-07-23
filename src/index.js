@@ -15,7 +15,7 @@ class MySQLQueryBuilder {
    * @param {object} db - MySQL connection object or simple config object in format of node mysql
    */
   constructor(db) {
-    this._dbConnection = dbConnection;
+    this._dbConnection = db;
     this.reset();
     this.queries = [];
   }
