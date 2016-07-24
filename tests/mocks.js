@@ -24,5 +24,16 @@ module.exports = {
   },
   DELETE: {
     1: "DELETE FROM table1 WHERE `id`=1;"
+  },
+  DB: {
+    connection: {
+      state: false,
+      connect: function(){},
+    },
+    config: {
+      host: '127.0.0.1',
+      user: 'root',
+      port: 3306
+    }
   }
 }

@@ -7,6 +7,9 @@ const TYPE_SELECT = 'select';
 const TYPE_INSERT = 'insert';
 const TYPE_UPDATE = 'update';
 const TYPE_DELETE = 'delete';
+
+//let dbAdapter = require('./db-adapter');
+
 /** Class representing a MySQLQueryBuilder. */
 class MySQLQueryBuilder {
   /**
@@ -15,9 +18,29 @@ class MySQLQueryBuilder {
    * @param {object} db - MySQL connection object or simple config object in format of node mysql
    */
   constructor(db) {
-    this._dbConnection = db;
+    this.setDb(db);
     this.reset();
     this.queries = [];
+  }
+  /**
+  * Checking type of object passed as db.
+  * dbConfig  - checking by host property in object
+  * dbConnection - checking connect() method
+  * @param {object} db
+  * @return {boolean}
+  */
+  setDb(db){
+    if(typeof db === 'object'){
+      if(db.connect !== undefined && typeof db.connect === 'function'){
+        this.dbConnection = db;
+        return true;
+      }
+      if(db.host !== undefined){
+        this.dbConfig = db;
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

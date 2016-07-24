@@ -13,6 +13,9 @@ var TYPE_SELECT = 'select';
 var TYPE_INSERT = 'insert';
 var TYPE_UPDATE = 'update';
 var TYPE_DELETE = 'delete';
+
+//let dbAdapter = require('./db-adapter');
+
 /** Class representing a MySQLQueryBuilder. */
 
 var MySQLQueryBuilder = function () {
@@ -24,19 +27,42 @@ var MySQLQueryBuilder = function () {
   function MySQLQueryBuilder(db) {
     _classCallCheck(this, MySQLQueryBuilder);
 
-    this._dbConnection = db;
+    this.setDb(db);
     this.reset();
     this.queries = [];
   }
-
   /**
-   * Executes a passed query or gets query from getLastQuery
-   * @param {string} query - Optional. The string containing SQL-query.
-   * @return {Promise} A new Promise object or a null
-   */
+  * Checking type of object passed as db.
+  * dbConfig  - checking by host property in object
+  * dbConnection - checking connect() method
+  * @param {object} db
+  * @return {boolean}
+  */
 
 
   _createClass(MySQLQueryBuilder, [{
+    key: 'setDb',
+    value: function setDb(db) {
+      if ((typeof db === 'undefined' ? 'undefined' : _typeof(db)) === 'object') {
+        if (db.connect !== undefined && typeof db.connect === 'function') {
+          this.dbConnection = db;
+          return true;
+        }
+        if (db.host !== undefined) {
+          this.dbConfig = db;
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Executes a passed query or gets query from getLastQuery
+     * @param {string} query - Optional. The string containing SQL-query.
+     * @return {Promise} A new Promise object or a null
+     */
+
+  }, {
     key: 'exec',
     value: function exec(query) {
       var _this = this;
