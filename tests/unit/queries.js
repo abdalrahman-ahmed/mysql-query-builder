@@ -72,4 +72,13 @@ describe('Working with queries', function() {
   it('setQuery() throwing error if SQL is not a string', function() {
     expect(() => { mqb.setQuery(); }).to.throw("setQuery: SQL is not a string");
   });
+
+  it('getQuery() no querries', function() {
+    expect(() => { mqb.getQuery(); }).to.throw("Exec: No query to execute");
+  });
+
+  it('exec() no querries', function() {
+    expect(() => { mqb.exec(); }).to.throw("Exec: Nor database config neither connection is specified. Execution is aborted");
+  });
+
 });

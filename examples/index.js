@@ -1,26 +1,33 @@
 var config = {
-  host: '127.0.0.1',
+  host: '192.168.99.100',
   user: 'root',
-  port: 3306
+  port: 3306,
+  password: 'qwe123',
+  database: 'mysql'
 };
 var mysql      = require('mysql');
 var connection = mysql.createConnection(config);
-
-var mqb = require('./../index.js');
-var qb = new mqb(connection);
-
-var SQL = qb.select('id, name')
-            .from('my_table')
-            .where('id', 5)
-            .build();
-
-//connection.connect();
-console.log("Connection:", connection.state );
-console.log("Connection:", typeof connection.connect === 'function' );
-connection.query(SQL, function(err, rows, fields) {
-  if (err) throw err;
-
-  console.log('The solution is: ', rows);
-});
-
 connection.end();
+var Mqb = require('./../index.js');
+var qb = new Mqb(connection);
+
+var SQL = qb.select('Host, Db')
+            .from('db')
+            .where('Host', '')
+            .build();
+console.log("SQL", SQL);
+// console.log("Exec: " );
+// qb.exec().then( result => {
+//   console.log(result);
+// }).catch(err => {
+//   console.log("Error: ", err)
+// })
+//
+// connection.connect();
+// connection.query(SQL, function(err, rows, fields) {
+//   if (err) throw err;
+//
+//   console.log('The result is: ', rows);
+// });
+//
+// connection.end();

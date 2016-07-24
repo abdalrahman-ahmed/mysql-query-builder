@@ -1,4 +1,5 @@
 "use strict";
+const path = require('path');
 
 const DEFAULT_LIMIT = 1000;
 const DEFAULT_ORDER = 'ASC';
@@ -8,7 +9,7 @@ const TYPE_INSERT = 'insert';
 const TYPE_UPDATE = 'update';
 const TYPE_DELETE = 'delete';
 
-//let dbAdapter = require('./db-adapter');
+let dbAdapter = require(path.join(__dirname, '/src/db-adapter'));
 
 /** Class representing a MySQLQueryBuilder. */
 class MySQLQueryBuilder {
@@ -42,36 +43,44 @@ class MySQLQueryBuilder {
     }
     return false;
   }
-
+  getQuery(query){
+    if(query === undefined){
+      query = this.getLastQuery();
+    }
+    if(query === null){
+      throw new Error("Exec: No query to execute");
+    }
+    if(typeof query === 'string'){
+      this.setQuery(query);
+      query = this.getLastQuery();
+    }
+    return query;
+  }
   /**
    * Executes a passed query or gets query from getLastQuery
    * @param {string} query - Optional. The string containing SQL-query.
    * @return {Promise} A new Promise object or a null
    */
   exec(query){
-    if(this.dbConnection != null){
-      return new Promise((resolve, reject) => {
-        if(query === undefined){
-          query = this.getLastQuery();
-        }
-        if(query === null){
-          throw new Error("Exec: No query to execute");
-        }
-        if(typeof query === 'string'){
-          this.setQuery(query);
-          query = this.getLastQuery();
-        }
-        this.dbConnection.query(query.query, (error, rows, fields) => {
-          query.executed = true;
-          if (error) {
-            return reject(error);
-          }
-          console.log('this.getQueries()', this.getQueries());
-          resolve(rows);
-        });
-      })
+    if(this.dbConnection === undefined && this.dbConfig === undefined){
+      throw new Error("Exec: Nor database config neither connection is specified. Execution is aborted");
     }
-    return null;
+    query = this.getQuery(query);
+    let db = new dbAdapter('mysql');
+
+    if(this.dbConnection === undefined){
+      this.dbConnection = db.setConfig(this.dbConfig).connect();
+    }
+    db.setConnection(this.dbConnection);
+
+    return new Promise((resolve, reject) => {
+      return db.exec(query.query).then(result => {
+        query.executed = true;
+        resolve(result);
+      }).catch(err => {
+        reject(err)
+      });
+    })
   }
 
   getLastQuery() {

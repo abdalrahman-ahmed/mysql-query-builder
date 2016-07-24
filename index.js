@@ -6,6 +6,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var path = require('path');
+
 var DEFAULT_LIMIT = 1000;
 var DEFAULT_ORDER = 'ASC';
 
@@ -14,7 +16,7 @@ var TYPE_INSERT = 'insert';
 var TYPE_UPDATE = 'update';
 var TYPE_DELETE = 'delete';
 
-//let dbAdapter = require('./db-adapter');
+var dbAdapter = require(path.join(__dirname, '/src/db-adapter'));
 
 /** Class representing a MySQLQueryBuilder. */
 
@@ -55,7 +57,21 @@ var MySQLQueryBuilder = function () {
       }
       return false;
     }
-
+  }, {
+    key: 'getQuery',
+    value: function getQuery(query) {
+      if (query === undefined) {
+        query = this.getLastQuery();
+      }
+      if (query === null) {
+        throw new Error("Exec: No query to execute");
+      }
+      if (typeof query === 'string') {
+        this.setQuery(query);
+        query = this.getLastQuery();
+      }
+      return query;
+    }
     /**
      * Executes a passed query or gets query from getLastQuery
      * @param {string} query - Optional. The string containing SQL-query.
@@ -65,31 +81,25 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'exec',
     value: function exec(query) {
-      var _this = this;
-
-      if (this.dbConnection != null) {
-        return new Promise(function (resolve, reject) {
-          if (query === undefined) {
-            query = _this.getLastQuery();
-          }
-          if (query === null) {
-            throw new Error("Exec: No query to execute");
-          }
-          if (typeof query === 'string') {
-            _this.setQuery(query);
-            query = _this.getLastQuery();
-          }
-          _this.dbConnection.query(query.query, function (error, rows, fields) {
-            query.executed = true;
-            if (error) {
-              return reject(error);
-            }
-            console.log('this.getQueries()', _this.getQueries());
-            resolve(rows);
-          });
-        });
+      if (this.dbConnection === undefined && this.dbConfig === undefined) {
+        throw new Error("Exec: Nor database config neither connection is specified. Execution is aborted");
       }
-      return null;
+      query = this.getQuery(query);
+      var db = new dbAdapter('mysql');
+
+      if (this.dbConnection === undefined) {
+        this.dbConnection = db.setConfig(this.dbConfig).connect();
+      }
+      db.setConnection(this.dbConnection);
+
+      return new Promise(function (resolve, reject) {
+        return db.exec(query.query).then(function (result) {
+          query.executed = true;
+          resolve(result);
+        }).catch(function (err) {
+          reject(err);
+        });
+      });
     }
   }, {
     key: 'getLastQuery',
@@ -392,13 +402,13 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'buildInsertSQL',
     value: function buildInsertSQL() {
-      var _this2 = this;
+      var _this = this;
 
       var keys = this._fields.map(function (key) {
         return '`' + key + '`';
       }).join(',');
       var values = this._fields.map(function (key) {
-        return '\'' + _this2._values[key] + '\'';
+        return '\'' + _this._values[key] + '\'';
       }).join(',');
       var SQL = 'INSERT INTO ' + this._table + ' (' + keys + ') VALUES (' + values + ')';
       return this.afterBuild(SQL);
