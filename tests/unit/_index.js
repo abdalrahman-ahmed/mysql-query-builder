@@ -50,4 +50,8 @@ describe('Checking default properties', function() {
     assert(Array.isArray(mqbUnit.queries), 'is array');
     assert.equal(mqbUnit.queries.length, 0);
   });
+  it('having', function() {
+    assert(Array.isArray(mqbUnit._having), 'is array');
+    assert.equal(mqbUnit._having.length, 0);
+  });
 });

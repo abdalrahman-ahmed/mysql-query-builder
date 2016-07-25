@@ -10,6 +10,7 @@ var path = require('path');
 
 var DEFAULT_LIMIT = 1000;
 var DEFAULT_ORDER = 'ASC';
+var BOOLEAN_AND = 'AND';
 
 var TYPE_SELECT = 'select';
 var TYPE_INSERT = 'insert';
@@ -367,6 +368,49 @@ var MySQLQueryBuilder = function () {
       return this;
     }
   }, {
+    key: 'having',
+    value: function having() {
+      var args = arguments;
+      var having = {};
+      var booleanOperator = BOOLEAN_AND;
+
+      if (args.length === 0) {
+        throw new Error("HAVING: no arguments passed");
+      }
+
+      if (args.length === 1) {
+        if (_typeof(args[0]) !== 'object') {
+          throw new Error("HAVING: no value for having passed");
+        }
+        having = args[0];
+      }
+
+      if (args.length === 2) {
+        if (typeof args[0] === 'string') {
+          having[args[0]] = args[1];
+        }
+        if (_typeof(args[0]) === 'object') {
+          having = args[0];
+          booleanOperator = args[1].toUpperCase();
+        }
+      }
+
+      if (args.length === 3) {
+        having[args[0]] = args[1];
+        booleanOperator = args[2].toUpperCase();
+      }
+
+      for (var field in having) {
+        this._having.push({
+          field: field,
+          value: having[field],
+          booleanOperator: booleanOperator
+        });
+      }
+
+      return this;
+    }
+  }, {
     key: 'build',
     value: function build() {
       if (this._queryType === TYPE_SELECT) {
@@ -640,6 +684,7 @@ var MySQLQueryBuilder = function () {
       this._queryType = null;
       this._limit = [0, DEFAULT_LIMIT];
       this._like = [];
+      this._having = [];
     }
   }]);
 
