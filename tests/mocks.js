@@ -13,7 +13,8 @@ module.exports = {
     11: "SELECT id, name FROM table1 LIMIT 0, 100;",
     12: "SELECT id, name FROM table1 LIMIT 0, 1000;",
     13: "SELECT id, name FROM table1 ORDER BY name asc LIMIT 0, 100;",
-    14: "SELECT firstName, lastName FROM table2 LIMIT 0, 1000;"
+    14: "SELECT firstName, lastName FROM table2 LIMIT 0, 1000;",
+    15: "SELECT id, name FROM table1 ORDER BY name asc GROUP BY name HAVING  `name` = 'Nik' LIMIT 0, 100;"
   },
   INSERT: {
     1: "INSERT INTO table1 (`id`,`name`) VALUES ('1','Nik');"
@@ -37,6 +38,6 @@ module.exports = {
     }
   },
   mysql: {
-    
+
   }
 }

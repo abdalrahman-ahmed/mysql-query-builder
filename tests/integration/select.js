@@ -102,4 +102,12 @@ describe('SELECT', function() {
       .build();
     assert.equal(mocks.SELECT[13], sql);
   });
+
+  it('HAVING: ' + mocks.SELECT[15], function() {
+    var sql = mqb.select('id, name').from('table1').groupBy('name').having('name', 'Nik')
+      .limit(0, 100)
+      .orderBy('name', 'asc')
+      .build();
+    assert.equal(mocks.SELECT[15], sql);
+  });
 });

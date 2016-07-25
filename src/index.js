@@ -435,6 +435,7 @@ class MySQLQueryBuilder {
         where +
         this.buildOrderBy() +
         this.buildGroupBy() +
+        this.buildHaving() +
         this.buildLimit();
 
     return this.afterBuild(SQL);
@@ -565,6 +566,26 @@ class MySQLQueryBuilder {
       return " GROUP BY " + this._groupBy;
     }
     return "";
+  }
+
+  buildHaving(){
+    let SQL = "";
+    if(this._having.length > 0){
+      let HAVING = [];
+      for(var i in this._having){
+        let item = " ";
+        const havingItem = this._having[i];
+
+        if(HAVING.length > 0){
+          item += havingItem.booleanOperator + " ";
+        }
+        item += "`" + havingItem.field +"` = ";
+        item += (typeof havingItem.value === 'number') ? havingItem.value : `'${havingItem.value}'`;
+        HAVING.push(item);
+      }
+      SQL += " HAVING " + HAVING.join(" ");
+    }
+    return SQL;
   }
 
   collectParams() {

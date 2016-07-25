@@ -191,4 +191,27 @@ describe('Builders', function() {
     assert.equal(params.join.length, 1);
   });
 
+  it('buildHaving(): field, value', function() {
+    mqb.having('name', 'Nik');
+    assert.equal(mqb.buildHaving(), " HAVING  `name` = 'Nik'");
+  });
+
+  it('buildHaving(): pupe field, value, booleanOperator', function() {
+    mqb.having('name', 'Nik').having('total', 10, 'or');
+    assert.equal(mqb.buildHaving(), " HAVING  `name` = 'Nik'  OR `total` = 10");
+  });
+
+  it('buildHaving() object', function() {
+    mqb.having({name: 'Nik', total: 10});
+    assert.equal(mqb.buildHaving(), " HAVING  `name` = 'Nik'  AND `total` = 10");
+  });
+
+  it('buildHaving() 2 objects', function() {
+    mqb.having({name: 'Nik', total: 10}, 'or');
+    assert.equal(mqb.buildHaving(), " HAVING  `name` = 'Nik'  OR `total` = 10");
+  });
+  it('buildHaving() 3 objects', function() {
+    mqb.having({name: 'Nik', total: 10}, 'or').having({ subTotal: 5}, 'or');
+    assert.equal(mqb.buildHaving(), " HAVING  `name` = 'Nik'  OR `total` = 10  OR `subTotal` = 5");
+  });
 });

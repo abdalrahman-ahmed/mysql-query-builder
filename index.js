@@ -492,7 +492,7 @@ var MySQLQueryBuilder = function () {
         }
       }
 
-      var SQL = "SELECT " + params.fields + " " + "FROM " + params.from + this.buildJoin() + where + this.buildOrderBy() + this.buildGroupBy() + this.buildLimit();
+      var SQL = "SELECT " + params.fields + " " + "FROM " + params.from + this.buildJoin() + where + this.buildOrderBy() + this.buildGroupBy() + this.buildHaving() + this.buildLimit();
 
       return this.afterBuild(SQL);
     }
@@ -626,6 +626,27 @@ var MySQLQueryBuilder = function () {
         return " GROUP BY " + this._groupBy;
       }
       return "";
+    }
+  }, {
+    key: 'buildHaving',
+    value: function buildHaving() {
+      var SQL = "";
+      if (this._having.length > 0) {
+        var HAVING = [];
+        for (var i in this._having) {
+          var item = " ";
+          var havingItem = this._having[i];
+
+          if (HAVING.length > 0) {
+            item += havingItem.booleanOperator + " ";
+          }
+          item += "`" + havingItem.field + "` = ";
+          item += typeof havingItem.value === 'number' ? havingItem.value : '\'' + havingItem.value + '\'';
+          HAVING.push(item);
+        }
+        SQL += " HAVING " + HAVING.join(" ");
+      }
+      return SQL;
     }
   }, {
     key: 'collectParams',
