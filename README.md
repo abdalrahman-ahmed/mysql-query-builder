@@ -9,9 +9,17 @@ SELECT (with joins), CREATE, UPDATE, DELETE.
 > This project is my pet project. So you can use it as is.
 
 ## Contents
-* [Methods](https://github.com/niklucky/mysql-query-builder/tree/master/docs/METHODS.md)
+* [Methods API](https://github.com/niklucky/mysql-query-builder/tree/master/docs/METHODS.md)
+* [Usage](https://github.com/niklucky/mysql-query-builder/tree/master/docs/USAGE.md)
 
-## Usage example
+# Usage example
+### More detailed usage:
+* [SELECT](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/SELECT.md)
+* [INSERT](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/SELECT.md)
+* [UPDATE](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/SELECT.md)
+* [DELETE](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/SELECT.md)
+
+## As builder
 ```javascript
 var conn = require('mysql');
 conn.connect();
@@ -27,68 +35,73 @@ conn.query(SQL, function(error, rows){
 });
 ```
 
-## Commands (soon)
-Order of commands in pipeline doesn't matter. They all return ```this``` so you can use them *UNTIL* `build()` method is called. After that query is immutable.
-
-Method ```build()``` returns a string and pushes last query in queries array, so you can always get it by ```lastQuery()``` call.
-
-### SELECT
-Select is a most difficult among other query types.
-To build SELECT query you have to specify:
-
-FROM by calling ```.from('my_table')``` or ```.from('my_table as mt')``` using as syntax. Builder will figure out and place alias to every field in fields.
-Next you specify fields by ```select(FIELDS)```. Fields could be an array ```['id', 'name']``` or string ```'id, name'```.
-Also you can use some joins: ```join()``` ('left', 'right', 'inner') or simply without modifier.
-
-** Examples **
+## As builder and executor
+### Passing db config
+You can pass config in nodejs mysql format:
+More info on [mysql](https://github.com/niklucky/mysql-query-builder/tree/master/docs/METHODS.md) package page.
+Query builder will create new connection and execute query.
 ```javascript
-var SQL = qb.select('id, name, st.email')
-            .from('my_table as mt')
-            .join('second_table as st', 'st.id=mt.id')
-            .join('third_table as tt', 'tt.id=st.id', 'left')
-            .where('id', 32)
-            .orderBy('tt.id', 'desc')
-            .groupBy('tt.name')
-            .limit(0, 10)
-            .build();
+var config = {
+  host: '127.0.0.1',
+  user: 'root',
+  password: 'mySecurePassword123',
+  database: 'MyDB'
+};
 
-// ... Query execution and data processing
+var QueryBuilder = require('mysql-query-builder');
+var mqb = new QueryBuilder(config);
+
+// Query builder unlike the mysql module returns Promise. Not a callback
+var result = mqb.select('id, name')
+            .from('my_table')
+            .where('id', 5)
+            .build()
+            .exec();
+
+result.then( result => {
+  console.log('DB result: ', result);
+}).catch(error => {
+  console.log('DB error: ', error);
+})
+```
+### Passing db connection
+You can pass to constructor mysql module connection object instead of config.
+If connection `state == 'disconnected'` builder will try to get config from connection object and reconnect automatically.
+
+```javascript
+var config = {
+  host: '127.0.0.1',
+  user: 'root',
+  password: 'mySecurePassword123',
+  database: 'MyDB'
+};
+var mysql = require('mysql');
+var connection = mysql.createConnection(config);
+connection.connect();
+
+var QueryBuilder = require('mysql-query-builder');
+var mqb = new QueryBuilder(connection); // Passing connection.
+
+// Query builder unlike the mysql module returns Promise. Not a callback
+var result = mqb.select('id, name')
+            .from('my_table')
+            .where('id', 5)
+            .build()
+            .exec();
+
+result.then( result => {
+  console.log('DB result: ', result);
+}).catch(error => {
+  console.log('DB error: ', error);
+})
 ```
 
-### INSERT
-```javascript
-var SQL = db.insert(
-            'my_table',
-            ['id', 'name'],
-            {id: 1, name: 'Steve'});
+## Commands
+Order of method calls in pipeline doesn't matter. They all return `this` so you can use them *UNTIL* `build()` method is called. After that query is immutable.
 
-// Or you can use simplier variant
-var SQL = db.insert(
-            'my_table',
-            {id: 1, name: 'Steve'})
-            .build(); // In that case fields will be taken from object idx
-// Or even simplier
-// ... before execution
-qb.setTable('my_table');
+Method `build()` returns a string and pushes last query in queries array, so you can always get it by `lastQuery()` call.
 
-// From now on you may call without setting the table
-var SQL = db.insert({ id: 1, name: 'Steve'}).build();
-
-```
-
-### UPDATE
-```javascript
-var SQL = qb.update('my_table', { id: 1, name: 'Steve'}).build();
-```
-
-### DELETE
-```javascript
-var SQL = qb.delete('my_table', { id: 1}).build();
-
-// or
-var SQL = qb.delete('my_table').where({id: 1}).build();
-```
-
+All methods are described in the [Methods API](https://github.com/niklucky/mysql-query-builder/tree/master/docs/METHODS.md) docs.
 
 ## Installation
 ```bash
