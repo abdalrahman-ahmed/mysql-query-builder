@@ -105,7 +105,7 @@ All methods are described in the [Methods API](https://github.com/niklucky/mysql
 
 ## Installation
 ```bash
-npm install --save mysql-query-builder
+npm install --save mysql-qb
 ```
 
 ## Tests
