@@ -1,6 +1,7 @@
 # MySQL Query builder
 [![Build Status](https://travis-ci.org/niklucky/mysql-query-builder.svg?branch=master)](https://travis-ci.org/niklucky/mysql-query-builder)
 [![npm version](https://img.shields.io/npm/v/mysql-qb.svg?style=flat-square)](https://www.npmjs.com/package/mysql-qb)
+[![codecov](https://codecov.io/gh/niklucky/mysql-query-builder/branch/master/graph/badge.svg)](https://codecov.io/gh/niklucky/mysql-query-builder)
 
 > Designed to make SQL-queries easier to use. With this builder you don't have to write raw-queries.
 In this version you can build simple SQL-queries:
@@ -15,9 +16,9 @@ SELECT (with joins), CREATE, UPDATE, DELETE.
 # Usage example
 ### More detailed usage:
 * [SELECT](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/SELECT.md)
-* [INSERT](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/SELECT.md)
-* [UPDATE](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/SELECT.md)
-* [DELETE](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/SELECT.md)
+* [INSERT](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/INSERT.md)
+* [UPDATE](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/UPDATE.md)
+* [DELETE](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/DELETE.md)
 
 ## As builder
 ```javascript

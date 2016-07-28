@@ -19,3 +19,5 @@ deploy:
   provider: npm
   email: "iam@niklucky.com"
   api_key: "7eabae90-995a-4d36-ba60-a1fb05697e11"
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
