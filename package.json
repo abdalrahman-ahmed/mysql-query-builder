@@ -9,8 +9,8 @@
     "watch": "babel -w src -d dist",
     "test-node": "tests/node-test.sh",
     "test-watch": "mocha -w --recursive tests",
-    "test": "NODE_ENV=test istanbul cover mocha -- -u exports -R spec tests/**/* && codecov",
-    "coverage": "NODE_ENV=test istanbul cover _mocha -- --recursive tests"
+    "test": "NODE_ENV=test istanbul cover mocha -- -u exports -R spec tests/**/*",
+    "coverage": "NODE_ENV=test istanbul cover mocha -- -u exports -R spec tests/**/* && codecov -t 3a4fc313-8290-489d-81e7-37d707d77fd5"
   },
   "repository": {
     "type": "git",
