@@ -25,7 +25,7 @@ SELECT (with joins), CREATE, UPDATE, DELETE.
 var conn = require('mysql');
 conn.connect();
 
-var qb = require('mysql-query-builder');
+var qb = require('mysql-qb');
 
 var SQL = qb.select('id, name')
             .from('my_table')
@@ -49,17 +49,17 @@ var config = {
   database: 'MyDB'
 };
 
-var QueryBuilder = require('mysql-query-builder');
+var QueryBuilder = require('mysql-qb');
 var mqb = new QueryBuilder(config);
 
 // Query builder unlike the mysql module returns Promise. Not a callback
-var result = mqb.select('id, name')
+var query = mqb.select('id, name')
             .from('my_table')
             .where('id', 5)
             .build()
             .exec();
 
-result.then( result => {
+query.then( result => {
   console.log('DB result: ', result);
 }).catch(error => {
   console.log('DB error: ', error);
@@ -80,17 +80,17 @@ var mysql = require('mysql');
 var connection = mysql.createConnection(config);
 connection.connect();
 
-var QueryBuilder = require('mysql-query-builder');
+var QueryBuilder = require('mysql-qb');
 var mqb = new QueryBuilder(connection); // Passing connection.
 
 // Query builder unlike the mysql module returns Promise. Not a callback
-var result = mqb.select('id, name')
+var query = mqb.select('id, name')
             .from('my_table')
             .where('id', 5)
             .build()
             .exec();
 
-result.then( result => {
+query.then( result => {
   console.log('DB result: ', result);
 }).catch(error => {
   console.log('DB error: ', error);

@@ -1,8 +1,15 @@
 'use strict';
-const _mysql = require('mysql');
 let _connection = null;
-
+let _mysql = null;
 class MySQLAdapter {
+
+  constructor(){
+    try {
+      _mysql = require('mysql');
+    }catch(e){
+      throw new Error('Cannot find module \'mysql\'')
+    }
+  }
 
   setConnection(connection){
     _connection = connection;

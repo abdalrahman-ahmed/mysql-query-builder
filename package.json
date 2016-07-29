@@ -1,15 +1,15 @@
 {
   "name": "mysql-qb",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "MySQL query builder",
   "main": "index.js",
   "scripts": {
     "start": "nodemon examples/index.js",
-    "build": "babel src/index.js -o index.js",
-    "watch": "babel -w src/index.js -o index.js",
+    "build": "babel src -d dist",
+    "watch": "babel -w src -d dist",
     "test-node": "tests/node-test.sh",
     "test-watch": "mocha -w --recursive tests",
-    "test": "mocha --recursive tests",
+    "test": "NODE_ENV=test istanbul cover node_modules/.bin/_mocha -- -u exports -R spec tests/**/* && codecov",
     "coverage": "NODE_ENV=test istanbul cover _mocha -- --recursive tests"
   },
   "repository": {
@@ -36,6 +36,7 @@
     "babel-cli": "^6.11.4",
     "babel-plugin-istanbul": "^1.0.3",
     "babel-preset-es2015": "^6.9.0",
-    "chai": "^3.5.0"
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.4"
   }
 }

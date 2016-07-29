@@ -30,6 +30,9 @@ module.exports = {
     connection: {
       state: false,
       connect: function(){},
+      config: {
+        
+      }
     },
     config: {
       host: '127.0.0.1',

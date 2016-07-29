@@ -10,7 +10,7 @@ const TYPE_INSERT = 'insert';
 const TYPE_UPDATE = 'update';
 const TYPE_DELETE = 'delete';
 
-let dbAdapter = require(path.join(__dirname, '/src/db-adapter'));
+let dbAdapter = require(path.join(__dirname, 'db-adapter'));
 
 /** Class representing a MySQLQueryBuilder. */
 class MySQLQueryBuilder {
@@ -48,7 +48,12 @@ class MySQLQueryBuilder {
     if(query === undefined){
       query = this.getLastQuery();
     }
-    if(query === null){
+    if(query === null && this._queryType !== null){
+      this.build();
+      query = this.getLastQuery();
+    }
+    
+    if( query === null){
       throw new Error("Exec: No query to execute");
     }
     if(typeof query === 'string'){
