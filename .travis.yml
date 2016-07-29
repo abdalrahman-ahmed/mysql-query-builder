@@ -13,12 +13,11 @@ cache:
 before_script:
   - npm install -g mocha
   - npm install -g istanbul
+  - npm install -g codecov
   - npm run build
 install:
   - npm install
 deploy:
   provider: npm
   email: "iam@niklucky.com"
-  api_key: "7eabae90-995a-4d36-ba60-a1fb05697e11"
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  api_key: "72bac027-1cb9-431c-a4ea-f8bd192caf73"
