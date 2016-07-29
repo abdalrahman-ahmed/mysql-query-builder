@@ -9,7 +9,7 @@
     "watch": "babel -w src -d dist",
     "test-node": "tests/node-test.sh",
     "test-watch": "mocha -w --recursive tests",
-    "test": "NODE_ENV=test istanbul cover node_modules/.bin/mocha -- -u exports -R spec tests/**/* && codecov",
+    "test": "NODE_ENV=test istanbul cover mocha -- -u exports -R spec tests/**/* && codecov",
     "coverage": "NODE_ENV=test istanbul cover _mocha -- --recursive tests"
   },
   "repository": {
