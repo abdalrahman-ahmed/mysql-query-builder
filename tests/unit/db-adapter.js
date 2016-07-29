@@ -13,8 +13,12 @@ beforeEach(function(done) {
 
 describe('DBAdapter', function() {
   it('constructor() empty', function() {
-    dba = new DbAdapter();
-    assert(dba instanceof DbAdapter);
+    try {
+      dba = new DbAdapter();
+      assert(dba instanceof DbAdapter);
+    }catch(e){
+      expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
+    }
   });
 
   it('constructor( mysql ) - mysql module installation check', function() {
@@ -24,23 +28,31 @@ describe('DBAdapter', function() {
       assert.equal(dba.getDbType(), 'mysql');
       assert(typeof dba.getAdapter() === 'object');
     }catch(e){
-      console.log('e', e);
       expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
     }
   });
 
   it('setDbType() empty - mysql', function() {
-    dba = new DbAdapter().setDbType();
-    assert.equal(dba.getDbType(), 'mysql');
-    assert(typeof dba.getAdapter() === 'object');
-    assert(dba instanceof DbAdapter);
+    try {
+      dba = new DbAdapter().setDbType();
+      assert.equal(dba.getDbType(), 'mysql');
+      assert(typeof dba.getAdapter() === 'object');
+      assert(dba instanceof DbAdapter);
+    }catch(e){
+      expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
+    }
+
   });
 
   it('getDbType()', function() {
-    dba = new DbAdapter();
-    var obj = dba.getDbType();
-    assert.equal(dba.getDbType(), 'mysql');
-    assert(typeof dba.getAdapter() === 'object');
+    try {
+      dba = new DbAdapter();
+      var obj = dba.getDbType();
+      assert.equal(dba.getDbType(), 'mysql');
+      assert(typeof dba.getAdapter() === 'object');
+    }catch(e){
+      expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
+    }
   });
 
   it('getAdapter() - + mysql module installation check', function() {
@@ -49,19 +61,26 @@ describe('DBAdapter', function() {
       assert(dba instanceof DbAdapter);
       assert(typeof dba.getAdapter() === 'object');
     }catch(e){
-      console.log('e', e);
       expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
     }
   });
 
   it('setConnection() - invalid', function() {
-    expect(() => { new DbAdapter().setConnection() }).to.throw("Connection is not valid object");
+    try{
+      expect(() => { new DbAdapter().setConnection() }).to.throw("Connection is not valid object");
+    }catch(e){
+      expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
+    }
   });
 
   it('setConnection() - valid', function() {
-    dba = new DbAdapter();
-    dba.setConnection(mocks.DB.connection);
-    assert(typeof dba.getConnection() === 'object');
-    assert(typeof dba.getConfig() === 'object');
+    try {
+      dba = new DbAdapter();
+      dba.setConnection(mocks.DB.connection);
+      assert(typeof dba.getConnection() === 'object');
+      assert(typeof dba.getConfig() === 'object');
+    }catch(e){
+      expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
+    }
   });
 });
