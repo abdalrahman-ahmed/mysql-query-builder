@@ -48,11 +48,11 @@ describe('insert', function() {
     assert.equal(mqb._table, 'table1');
     assert(Array.isArray(mqb._fields), 'is array');
     assert.equal(mqb._fields.length, 2);
-    assert.equal(Object.keys(mqb._values).length, 2);
+    assert.equal(Object.keys(mqb._insertValues).length, 1);
     assert.equal(mqb._fields[0], 'id');
     assert.equal(mqb._fields[1], 'name');
-    assert.equal(mqb._values.id, 1);
-    assert.equal(mqb._values.name, 'Nik');
+    assert.equal(mqb._insertValues[0].id, 1);
+    assert.equal(mqb._insertValues[0].name, 'Nik');
     assert(obj instanceof MySQLQueryBuilder, 'return this');
   });
 
@@ -62,16 +62,12 @@ describe('insert', function() {
     assert.equal(mqb._table, 'table1');
     assert(Array.isArray(mqb._fields), 'is array');
     assert.equal(mqb._fields.length, 2);
-    assert.equal(Object.keys(mqb._values).length, 2);
+    assert.equal(Object.keys(mqb._insertValues).length, 1);
     assert.equal(mqb._fields[0], 'id');
     assert.equal(mqb._fields[1], 'name');
-    assert.equal(mqb._values.id, 1);
-    assert.equal(mqb._values.name, 'Nik');
+    assert.equal(mqb._insertValues[0].id, 1);
+    assert.equal(mqb._insertValues[0].name, 'Nik');
     assert(obj instanceof MySQLQueryBuilder, 'return this');
-  });
-
-  it('insert (table, data == undefined) throwing error', function() {
-    expect(() => { mqb.insert('table1'); }).to.throw("Insert: table is not provided");
   });
 
   it('insert (table == undefined) throwing error', function() {

@@ -18,6 +18,7 @@ var TYPE_UPDATE = 'update';
 var TYPE_DELETE = 'delete';
 
 var dbAdapter = require(path.join(__dirname, 'db-adapter'));
+var _insert = require(path.join(__dirname, 'builders', 'insert'));
 
 /** Class representing a MySQLQueryBuilder. */
 
@@ -152,34 +153,26 @@ var MySQLQueryBuilder = function () {
       }
 
       if (arguments.length === 1) {
-        if (this._table === null) {
-          throw new Error("Insert: table is not provided");
-        }
-        this._values = arguments[0];
+        this._insertValues = _insert.setValues(this._insertValues, arguments[0]);
       }
 
       if (arguments.length === 2) {
         this._table = arguments[0];
-        this._values = arguments[1];
+        this._insertValues = _insert.setValues(this._insertValues, arguments[1]);
       }
       if (arguments.length === 3) {
         this._table = arguments[0];
         this._fields = arguments[1];
-        this._values = arguments[2];
+        this._insertValues = _insert.setValues(this._insertValues, arguments[2]);
       }
 
-      if (typeof this._table !== 'string') {
-        throw new Error("Table is undefined");
-      }
-
-      if (_typeof(this._values) !== 'object') {
+      if (_typeof(this._insertValues) !== 'object') {
         throw new Error("Insert data is empty");
       }
 
       if (this._fields === null) {
-        this._fields = Object.keys(this._values);
+        this._fields = Object.keys(this._insertValues[0]);
       }
-
       return this;
     }
   }, {
@@ -426,7 +419,7 @@ var MySQLQueryBuilder = function () {
       }
 
       if (this._queryType === TYPE_INSERT) {
-        return this.buildInsertSQL();
+        return this.afterBuild(_insert.build(this._table, this._fields, this._insertValues));
       }
 
       if (this._queryType === TYPE_UPDATE) {
@@ -450,20 +443,6 @@ var MySQLQueryBuilder = function () {
       this.setQuery(SQL);
       this.reset();
       return SQL;
-    }
-  }, {
-    key: 'buildInsertSQL',
-    value: function buildInsertSQL() {
-      var _this2 = this;
-
-      var keys = this._fields.map(function (key) {
-        return '`' + key + '`';
-      }).join(',');
-      var values = this._fields.map(function (key) {
-        return '\'' + _this2._values[key] + '\'';
-      }).join(',');
-      var SQL = 'INSERT INTO ' + this._table + ' (' + keys + ') VALUES (' + values + ')';
-      return this.afterBuild(SQL);
     }
   }, {
     key: 'buildUpdateSQL',
@@ -710,6 +689,7 @@ var MySQLQueryBuilder = function () {
       this._join = [];
       this._fields = null;
       this._values = null;
+      this._insertValues = [];
       this._orderBy = [];
       this._groupBy = null;
       this._queryType = null;

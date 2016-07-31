@@ -22,10 +22,4 @@ describe('INSERT', function() {
   it('insert() throwing error', function() {
     expect(() => { mqb.insert(); }).to.throw("Insert: data is not provided");
   });
-  it('insert(undefined, data) throwing error', function() {
-    expect(() => { mqb.insert(undefined, {id: 1}); }).to.throw("Table is undefined");
-  });
-  it('insert(table1, undefined) throwing error', function() {
-    expect(() => { mqb.insert('table1', undefined); }).to.throw("Insert data is empty");
-  });
 });

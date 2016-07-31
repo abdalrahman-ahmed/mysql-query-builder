@@ -11,6 +11,7 @@ const TYPE_UPDATE = 'update';
 const TYPE_DELETE = 'delete';
 
 let dbAdapter = require(path.join(__dirname, 'db-adapter'));
+const insert = require(path.join(__dirname, 'builders', 'insert'));
 
 /** Class representing a MySQLQueryBuilder. */
 class MySQLQueryBuilder {
@@ -122,34 +123,26 @@ class MySQLQueryBuilder {
     }
 
     if( arguments.length === 1){
-      if(this._table === null){
-        throw new Error("Insert: table is not provided");
-      }
-      this._values = arguments[0];
+      this._insertValues = insert.setValues(this._insertValues, arguments[0]);
     }
 
     if( arguments.length === 2){
       this._table = arguments[0];
-      this._values = arguments[1];
+      this._insertValues = insert.setValues(this._insertValues, arguments[1]);
     }
     if( arguments.length === 3){
       this._table = arguments[0];
       this._fields = arguments[1];
-      this._values = arguments[2];
+      this._insertValues = insert.setValues(this._insertValues, arguments[2]);
     }
 
-    if(typeof this._table !== 'string'){
-      throw new Error("Table is undefined");
-    }
-
-    if(typeof this._values !== 'object'){
+    if(typeof this._insertValues !== 'object'){
       throw new Error("Insert data is empty");
     }
 
     if(this._fields === null){
-      this._fields = Object.keys(this._values)
+      this._fields = Object.keys(this._insertValues[0]);
     }
-
     return this;
   }
 
@@ -371,7 +364,9 @@ class MySQLQueryBuilder {
     }
 
     if(this._queryType === TYPE_INSERT){
-      return this.buildInsertSQL();
+      return this.afterBuild(
+        insert.build(this._table, this._fields, this._insertValues)
+      );
     }
 
     if(this._queryType === TYPE_UPDATE){
@@ -394,13 +389,6 @@ class MySQLQueryBuilder {
     this.setQuery(SQL);
     this.reset();
     return SQL;
-  }
-
-  buildInsertSQL(){
-    const keys = this._fields.map( key => ( '`' + key + '`' ) ).join(',');
-    const values = this._fields.map( key => ( '\'' + this._values[key] + '\'' ) ).join(',');
-    let SQL = 'INSERT INTO ' + this._table + ' (' + keys + ') VALUES (' + values + ')';
-    return this.afterBuild(SQL);
   }
 
   buildUpdateSQL(){
@@ -475,7 +463,7 @@ class MySQLQueryBuilder {
         if (typeof expression.value === 'object') {
           sign = " IN ";
           expression.value = Object.assign({}, expression.value);
-          
+
           for (var key in expression.value) {
             if (!this._where.hasOwnProperty(i)) {
               continue;
@@ -643,6 +631,7 @@ class MySQLQueryBuilder {
     this._join = [];
     this._fields = null;
     this._values = null;
+    this._insertValues = [];
     this._orderBy = [];
     this._groupBy = null;
     this._queryType = null;

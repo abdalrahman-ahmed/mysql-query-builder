@@ -56,7 +56,6 @@ var mqb = new QueryBuilder(config);
 var query = mqb.select('id, name')
             .from('my_table')
             .where('id', 5)
-            .build()
             .exec();
 
 query.then( result => {
@@ -87,7 +86,6 @@ var mqb = new QueryBuilder(connection); // Passing connection.
 var query = mqb.select('id, name')
             .from('my_table')
             .where('id', 5)
-            .build()
             .exec();
 
 query.then( result => {
