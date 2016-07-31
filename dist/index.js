@@ -61,14 +61,14 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'getQuery',
     value: function getQuery(query) {
-      if (query === undefined) {
-        query = this.getLastQuery();
-      }
-      if (query === null && this._queryType !== null) {
+      if (query === undefined && this._queryType !== null) {
         this.build();
         query = this.getLastQuery();
       }
 
+      if (query === undefined) {
+        query = this.getLastQuery();
+      }
       if (query === null) {
         throw new Error("Exec: No query to execute");
       }
@@ -87,6 +87,8 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'exec',
     value: function exec(query) {
+      var _this = this;
+
       if (this.dbConnection === undefined && this.dbConfig === undefined) {
         throw new Error("Exec: Nor database config neither connection is specified. Execution is aborted");
       }
@@ -101,6 +103,7 @@ var MySQLQueryBuilder = function () {
       return new Promise(function (resolve, reject) {
         return db.exec(query.query).then(function (result) {
           query.executed = true;
+          _this.reset();
           resolve(result);
         }).catch(function (err) {
           reject(err);
@@ -451,13 +454,13 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'buildInsertSQL',
     value: function buildInsertSQL() {
-      var _this = this;
+      var _this2 = this;
 
       var keys = this._fields.map(function (key) {
         return '`' + key + '`';
       }).join(',');
       var values = this._fields.map(function (key) {
-        return '\'' + _this._values[key] + '\'';
+        return '\'' + _this2._values[key] + '\'';
       }).join(',');
       var SQL = 'INSERT INTO ' + this._table + ' (' + keys + ') VALUES (' + values + ')';
       return this.afterBuild(SQL);
@@ -530,6 +533,8 @@ var MySQLQueryBuilder = function () {
 
           if (_typeof(expression.value) === 'object') {
             sign = " IN ";
+            expression.value = Object.assign({}, expression.value);
+
             for (var key in expression.value) {
               if (!this._where.hasOwnProperty(i)) {
                 continue;

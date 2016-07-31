@@ -72,14 +72,18 @@ var DBAdapter = function () {
     value: function getConfig() {
       return _config;
     }
+    /* istanbul ignore next */
+
   }, {
-    key: 'checkConnection',
-    value: function checkConnection() {
+    key: 'checkConnectionStatus',
+    value: function checkConnectionStatus() {
       if (this.getConnection().state === 'disconnected') {
         console.log("Disconnected. Trying to reconnect");
         this.setConnection(this.getAdapter().connect(this.getConfig()));
       }
     }
+    /* istanbul ignore next */
+
   }, {
     key: 'connect',
     value: function connect() {
@@ -89,10 +93,12 @@ var DBAdapter = function () {
       }
       return _connection;
     }
+    /* istanbul ignore next */
+
   }, {
     key: 'exec',
     value: function exec(query) {
-      this.checkConnection();
+      this.checkConnectionStatus();
       return this.getAdapter().exec(query);
     }
   }]);
