@@ -45,14 +45,14 @@ class MySQLQueryBuilder {
     return false;
   }
   getQuery(query){
-    if(query === undefined){
-      query = this.getLastQuery();
-    }
-    if(query === null && this._queryType !== null){
+    if(query === undefined && this._queryType !== null){
       this.build();
       query = this.getLastQuery();
     }
-    
+
+    if(query === undefined){
+      query = this.getLastQuery();
+    }
     if( query === null){
       throw new Error("Exec: No query to execute");
     }
@@ -82,6 +82,7 @@ class MySQLQueryBuilder {
     return new Promise((resolve, reject) => {
       return db.exec(query.query).then(result => {
         query.executed = true;
+        this.reset();
         resolve(result);
       }).catch(err => {
         reject(err)
@@ -473,6 +474,8 @@ class MySQLQueryBuilder {
 
         if (typeof expression.value === 'object') {
           sign = " IN ";
+          expression.value = Object.assign({}, expression.value);
+          
           for (var key in expression.value) {
             if (!this._where.hasOwnProperty(i)) {
               continue;

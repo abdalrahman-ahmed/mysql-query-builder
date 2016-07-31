@@ -56,7 +56,8 @@ class DBAdapter {
   getConfig(){
     return _config;
   }
-  checkConnection(){
+  /* istanbul ignore next */
+  checkConnectionStatus(){
     if(this.getConnection().state === 'disconnected'){
       console.log("Disconnected. Trying to reconnect");
       this.setConnection(
@@ -66,6 +67,7 @@ class DBAdapter {
       );
     }
   }
+  /* istanbul ignore next */
   connect(){
     _connection = this.getAdapter().connect(this.getConfig());
     if(! _connection){
@@ -73,9 +75,9 @@ class DBAdapter {
     }
     return _connection;
   }
-
+  /* istanbul ignore next */
   exec(query){
-    this.checkConnection();
+    this.checkConnectionStatus();
     return this.getAdapter().exec(query);
   }
 }

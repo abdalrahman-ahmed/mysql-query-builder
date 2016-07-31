@@ -83,4 +83,56 @@ describe('DBAdapter', function() {
       expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
     }
   });
+
+  it('getConnection() - valid', function() {
+    try {
+      dba = new DbAdapter();
+      dba.setConnection(mocks.DB.connection);
+      var connection = dba.getConnection();
+      assert(typeof connection === 'object');
+      assert(typeof connection.config === 'object');
+      assert(typeof connection.connect === 'function');
+      assert.equal(connection.state, false);
+    }catch(e){
+      expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
+    }
+  });
+
+  it('setConfig()', function() {
+    try {
+      dba = new DbAdapter();
+      dba.setConfig(mocks.DB.config);
+      assert(dba.setConfig(mocks.DB.config) instanceof DbAdapter);
+    }catch(e){
+      expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
+    }
+  });
+
+    it('getConfig()', function() {
+      try {
+        dba = new DbAdapter();
+        dba.setConfig(mocks.DB.config);
+        var config = dba.getConfig();
+        assert(typeof config === 'object');
+        assert.equal(config.host, '127.0.0.1');
+        assert.equal(config.user, 'root');
+      }catch(e){
+        expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
+      }
+    });
+
+    it('checkConnection() - valid', function() {
+      try {
+        dba = new DbAdapter();
+        dba.setConnection(mocks.DB.connection);
+        var connection = dba.checkConnectionStatus();
+        assert(typeof connection === 'object');
+        assert(typeof connection.config === 'object');
+        assert(typeof connection.connect === 'function');
+        assert.equal(connection.state, false);
+      }catch(e){
+        expect(() => { new DbAdapter('mysql') }).to.throw("Cannot find module \'mysql\'");
+      }
+    });
+
 });
