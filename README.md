@@ -1,17 +1,28 @@
 # MySQL Query builder
 [![Build Status](https://travis-ci.org/niklucky/mysql-query-builder.svg?branch=master)](https://travis-ci.org/niklucky/mysql-query-builder)
-[![npm version](https://img.shields.io/npm/v/mysql-qb.svg?style=flat-square)](https://www.npmjs.com/package/mysql-qb)
+[![npm version](https://img.shields.io/npm/v/mysql-qb.svg)](https://www.npmjs.com/package/mysql-qb)
 [![codecov](https://codecov.io/gh/niklucky/mysql-query-builder/branch/master/graph/badge.svg)](https://codecov.io/gh/niklucky/mysql-query-builder)
 
 > Designed to make SQL-queries easier to use. With this builder you don't have to write raw-queries.
 In this version you can build simple SQL-queries:
 SELECT (with joins), CREATE, UPDATE, DELETE.
 
-> This project is my pet project. So you can use it as is.
+> I'm using this builder for my projects so it updates few times a week. It is not stable for now and very young. v1.0 release is planned for September 1st.
 
 ## Contents
 * [Methods API](https://github.com/niklucky/mysql-query-builder/tree/master/docs/METHODS.md)
 * [Usage](https://github.com/niklucky/mysql-query-builder/tree/master/docs/USAGE.md)
+
+## Changelog
+
+> *Unreleased (roadmap)*
+> * SELECT ... UNION ... SELECT
+> * INSERT ... SELECT
+
+
+* 0.7.1 — Added changes log
+* 0.7.0 — INSERT batch implementation
+* [Details](https://github.com/niklucky/mysql-query-builder/tree/master/CHANGELOG.md)
 
 # Usage example
 ### More detailed usage:
