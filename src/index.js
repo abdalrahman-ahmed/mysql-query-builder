@@ -455,9 +455,12 @@ class MySQLQueryBuilder {
         }
 
         var sign = "=";
-        if (expression.key.indexOf('!=') !== -1) {
-          sign = "!=";
-          expression.key = expression.key.replace('!=', '').trim();
+        var operators = ['!=', '>=', '<=', '>', '<'];
+        for( var i in operators){
+          if (expression.key.indexOf(operators[i]) !== -1) {
+            sign = operators[i];
+            expression.key = expression.key.replace(operators[i], '').trim();
+          }
         }
 
         if (typeof expression.value === 'object') {

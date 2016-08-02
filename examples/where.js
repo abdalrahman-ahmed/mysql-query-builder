@@ -1,0 +1,13 @@
+var Mqb = require('./../src/index.js');
+var qb = new Mqb();
+
+var SQL = qb.select('id').from('my_table').where('id !=', 1).build();
+console.log("SQL", SQL);
+var SQL = qb.select('id').from('my_table').where('id >', 1).build();
+console.log("SQL", SQL);
+var SQL = qb.select('id').from('my_table').where('id <', 1).build();
+console.log("SQL", SQL);
+var SQL = qb.select('id').from('my_table').where('id >=', 1).build();
+console.log("SQL", SQL);
+var SQL = qb.select('id').from('my_table').where('id <=', 1).build();
+console.log("SQL", SQL);

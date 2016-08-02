@@ -1,6 +1,6 @@
 {
   "name": "mysql-qb",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "MySQL query builder",
   "main": "index.js",
   "scripts": {

@@ -27,7 +27,9 @@ var MySQLAdapter = function () {
   }, {
     key: 'connect',
     value: function connect(config) {
-      this.setConnection(_mysql.createConnection(config));
+      var connection = _mysql.createConnection(config);
+      connection.connect();
+      this.setConnection(connection);
       return this.getConnection();
     }
   }, {

@@ -505,14 +505,19 @@ var MySQLQueryBuilder = function () {
           }
 
           var sign = "=";
-          if (expression.key.indexOf('!=') !== -1) {
-            sign = "!=";
-            expression.key = expression.key.replace('!=', '').trim();
+          var operators = ['!=', '>=', '<=', '>', '<'];
+          for (var i in operators) {
+            if (expression.key.indexOf(operators[i]) !== -1) {
+              sign = operators[i];
+              expression.key = expression.key.replace(operators[i], '').trim();
+            }
           }
 
           if (_typeof(expression.value) === 'object') {
             sign = " IN ";
-            expression.value = Object.assign({}, expression.value);
+            expression.value = expression.value.map(function (value) {
+              return value;
+            });
 
             for (var key in expression.value) {
               if (!this._where.hasOwnProperty(i)) {
