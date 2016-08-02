@@ -462,7 +462,7 @@ class MySQLQueryBuilder {
 
         if (typeof expression.value === 'object') {
           sign = " IN ";
-          expression.value = Object.assign({}, expression.value);
+          expression.value = expression.value.map(value => { return value });
 
           for (var key in expression.value) {
             if (!this._where.hasOwnProperty(i)) {

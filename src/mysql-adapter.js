@@ -17,7 +17,9 @@ class MySQLAdapter {
   }
 
   connect(config){
-    this.setConnection(_mysql.createConnection(config));
+    let connection = _mysql.createConnection(config);
+    connection.connect();
+    this.setConnection(connection);
     return this.getConnection();
   }
 

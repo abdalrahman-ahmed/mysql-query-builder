@@ -18,6 +18,7 @@ SELECT (with joins), CREATE, UPDATE, DELETE.
 > *Unreleased (roadmap)*
 > * SELECT ... UNION ... SELECT
 > * INSERT ... SELECT
+> * Fixes and new features in `where`
 
 
 * 0.7.1 — Added changes log
