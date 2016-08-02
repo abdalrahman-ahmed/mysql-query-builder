@@ -4,8 +4,16 @@
 * SELECT ... UNION ... SELECT
 * Refactoring: builders incapsulation
 * INSERT ... SELECT
-* Add boolean operators in `where` in addition to `!=`: `>`, `<`, `>=`, `<=`
-* Fix `where` array mutation
+
+## 0.7.2 — 2016-08-02
+### Added
+- Added boolean operators in `where` in addition: `!=`, `>`, `<`, `>=`, `<=`
+
+### Changed
+- MySQL connection: disconnect state fixed.
+
+### Fixed
+* Fixed `where` array mutation
 
 ## 0.7.1 — 2016-08-01
 ### Added

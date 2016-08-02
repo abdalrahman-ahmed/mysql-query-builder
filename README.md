@@ -18,9 +18,8 @@ SELECT (with joins), CREATE, UPDATE, DELETE.
 > *Unreleased (roadmap)*
 > * SELECT ... UNION ... SELECT
 > * INSERT ... SELECT
-> * Fixes and new features in `where`
 
-
+* 0.7.2 - Fixes and new features in `where`. Updated MySQL adapter
 * 0.7.1 — Added changes log
 * 0.7.0 — INSERT batch implementation
 * [Details](https://github.com/niklucky/mysql-query-builder/tree/master/CHANGELOG.md)
