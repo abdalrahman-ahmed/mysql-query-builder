@@ -47,8 +47,6 @@ describe('Builders', function() {
     assert.equal(mqb._groupBy, null);
     assert.equal(mqb._queryType, null);
     assert(Array.isArray(mqb._limit));
-    assert.equal(mqb._limit[0], 0);
-    assert.equal(mqb._limit[1], 1000);
     assert.equal(mqb._like.length, 0);
   });
 
@@ -119,11 +117,11 @@ describe('Builders', function() {
   });
 
   it('buildLimit()', function() {
-    mqb._limit = null;
+    mqb._limit = [];
     assert.equal(mqb.buildLimit(), "");
   });
   it('buildLimit()', function() {
-    assert.equal(mqb.buildLimit(), " LIMIT 0, 1000");
+    assert.equal(mqb.buildLimit(), "");
   });
 
   it('buildOrderBy()', function() {

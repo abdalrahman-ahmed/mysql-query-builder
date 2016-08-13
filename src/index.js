@@ -9,7 +9,7 @@ const TYPE_SELECT = 'select';
 const TYPE_INSERT = 'insert';
 const TYPE_UPDATE = 'update';
 const TYPE_DELETE = 'delete';
-
+const TYPE_UNION  = 'union';
 let dbAdapter = require(path.join(__dirname, 'db-adapter'));
 const insert = require(path.join(__dirname, 'builders', 'insert'));
 
@@ -24,6 +24,7 @@ class MySQLQueryBuilder {
     this.setDb(db);
     this.reset();
     this.queries = [];
+    this._union = [];
   }
   /**
   * Checking type of object passed as db.
@@ -109,7 +110,7 @@ class MySQLQueryBuilder {
   }
 
   select(fields = null) {
-    this._queryType = TYPE_SELECT;
+    this._queryType = (this._union.length === 0) ? TYPE_SELECT : TYPE_UNION;
     this._fields = fields;
     return this;
   }
@@ -202,6 +203,16 @@ class MySQLQueryBuilder {
       }
       this.setTable(arguments[0]);
     }
+    return this;
+  }
+  union(){
+    let SQL = this.buildSelectSQL();
+    if(typeof SQL !== 'string'){
+      throw new Error("After build: SQL is not string. " + SQL);
+    }
+    this.reset();
+    this._queryType = TYPE_UNION;
+    this._union.push('(' + SQL + ')');
     return this;
   }
 
@@ -360,7 +371,9 @@ class MySQLQueryBuilder {
 
   build() {
     if(this._queryType === TYPE_SELECT){
-      return this.buildSelectSQL();
+      return this.afterBuild(
+        this.buildSelectSQL()
+      );
     }
 
     if(this._queryType === TYPE_INSERT){
@@ -377,6 +390,10 @@ class MySQLQueryBuilder {
       return this.buildDeleteSQL();
     }
 
+    if(this._queryType === TYPE_UNION){
+      return this.buildUnionSQL();
+    }
+
     throw new Error("Query type " + this._queryType + " is not supported");
   }
 
@@ -391,6 +408,15 @@ class MySQLQueryBuilder {
     return SQL;
   }
 
+  buildUnionSQL(){
+    this.union();
+    let SQL = "";
+    if(this._union.length > 0){
+      SQL = this._union.join(' UNION ');
+      this._union = [];
+    }
+    return SQL;
+  }
   buildUpdateSQL(){
     const where = this.buildWhere();
     let SQL = "UPDATE " + this._table + " SET ";
@@ -432,7 +458,7 @@ class MySQLQueryBuilder {
         this.buildHaving() +
         this.buildLimit();
 
-    return this.afterBuild(SQL);
+    return SQL;
   }
 
   buildWhere() {
@@ -545,7 +571,7 @@ class MySQLQueryBuilder {
   }
 
   buildLimit() {
-    if (Array.isArray(this._limit)) {
+    if (this._limit.length > 0) {
       return " LIMIT " + this._limit[0] + ", " + this._limit[1];
     }
     return "";
@@ -638,7 +664,7 @@ class MySQLQueryBuilder {
     this._orderBy = [];
     this._groupBy = null;
     this._queryType = null;
-    this._limit = [0, DEFAULT_LIMIT];
+    this._limit = [];
     this._like = [];
     this._having = [];
   }

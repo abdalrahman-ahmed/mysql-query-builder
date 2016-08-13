@@ -16,7 +16,7 @@ var TYPE_SELECT = 'select';
 var TYPE_INSERT = 'insert';
 var TYPE_UPDATE = 'update';
 var TYPE_DELETE = 'delete';
-
+var TYPE_UNION = 'union';
 var dbAdapter = require(path.join(__dirname, 'db-adapter'));
 var _insert = require(path.join(__dirname, 'builders', 'insert'));
 
@@ -34,6 +34,7 @@ var MySQLQueryBuilder = function () {
     this.setDb(db);
     this.reset();
     this.queries = [];
+    this._union = [];
   }
   /**
   * Checking type of object passed as db.
@@ -136,7 +137,7 @@ var MySQLQueryBuilder = function () {
     value: function select() {
       var fields = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
-      this._queryType = TYPE_SELECT;
+      this._queryType = this._union.length === 0 ? TYPE_SELECT : TYPE_UNION;
       this._fields = fields;
       return this;
     }
@@ -234,6 +235,18 @@ var MySQLQueryBuilder = function () {
         }
         this.setTable(arguments[0]);
       }
+      return this;
+    }
+  }, {
+    key: 'union',
+    value: function union() {
+      var SQL = this.buildSelectSQL();
+      if (typeof SQL !== 'string') {
+        throw new Error("After build: SQL is not string. " + SQL);
+      }
+      this.reset();
+      this._queryType = TYPE_UNION;
+      this._union.push('(' + SQL + ')');
       return this;
     }
   }, {
@@ -415,7 +428,7 @@ var MySQLQueryBuilder = function () {
     key: 'build',
     value: function build() {
       if (this._queryType === TYPE_SELECT) {
-        return this.buildSelectSQL();
+        return this.afterBuild(this.buildSelectSQL());
       }
 
       if (this._queryType === TYPE_INSERT) {
@@ -430,6 +443,10 @@ var MySQLQueryBuilder = function () {
         return this.buildDeleteSQL();
       }
 
+      if (this._queryType === TYPE_UNION) {
+        return this.buildUnionSQL();
+      }
+
       throw new Error("Query type " + this._queryType + " is not supported");
     }
   }, {
@@ -442,6 +459,17 @@ var MySQLQueryBuilder = function () {
 
       this.setQuery(SQL);
       this.reset();
+      return SQL;
+    }
+  }, {
+    key: 'buildUnionSQL',
+    value: function buildUnionSQL() {
+      this.union();
+      var SQL = "";
+      if (this._union.length > 0) {
+        SQL = this._union.join(' UNION ');
+        this._union = [];
+      }
       return SQL;
     }
   }, {
@@ -481,7 +509,7 @@ var MySQLQueryBuilder = function () {
 
       var SQL = "SELECT " + params.fields + " " + "FROM " + params.from + this.buildJoin() + where + this.buildOrderBy() + this.buildGroupBy() + this.buildHaving() + this.buildLimit();
 
-      return this.afterBuild(SQL);
+      return SQL;
     }
   }, {
     key: 'buildWhere',
@@ -596,7 +624,7 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'buildLimit',
     value: function buildLimit() {
-      if (Array.isArray(this._limit)) {
+      if (this._limit.length > 0) {
         return " LIMIT " + this._limit[0] + ", " + this._limit[1];
       }
       return "";
@@ -698,7 +726,7 @@ var MySQLQueryBuilder = function () {
       this._orderBy = [];
       this._groupBy = null;
       this._queryType = null;
-      this._limit = [0, DEFAULT_LIMIT];
+      this._limit = [];
       this._like = [];
       this._having = [];
     }
