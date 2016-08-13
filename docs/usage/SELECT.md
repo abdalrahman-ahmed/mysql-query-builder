@@ -22,6 +22,3 @@ var SQL = qb.select('id, name, st.email')
 
 // ... Query execution and data processing
 ```
-
-## Tests
-Tests for select are located in `tests/unit` and `tests/integration`.

@@ -21,6 +21,7 @@
 | | `limit` | `start`: number, `limit`: number | Example: `limit(0, 10)`. By default `limit(0, 1000)`
 | | `orderBy` | `fields`: string / array, `order`: string (asc) | Example: `orderBy('name')`, outputs: `ORDER BY name ASC` (ASC by default). Or `orderBy('name', 'desc')`. You can define couple orders: `orderBy('name', 'desc').orderBy('dateOfBirth', 'asc')` |
 | | `groupBy` | `fields`: string | Example: `groupBy('name')` or `groupBy('name, lastName')`|
+| UNION | `union` | | `union()` command it's just a glue to join selects. You just call it in between: `.select(...).where(...).union().select(...)...`
 | INSERT  | `insert`  | `table`: string, `fileds`: array / object, `data`: object | You can omit fields and in that case **keys** of data object will be used. Examples: `insert('table1', ['id', 'name'], {id: 1, name: 'Nik'})` or `insert('table1', {id: 1, name: 'Nik'})`. Result will be the same.|
 | | `insertBatch` | `table`: string, `fields`: array / object, `data`: array  | Inserting array of data in one query. Soon! |
 | UPDATE  | `update`  | `table`: string (optional), `values`: object  | **Important** always use with `where` in other case consequences will be not that awesome. Examples: `update('table1', {name: 'Nik'}).where({ name: 'Mark'})` or omit table if you used `setTable('table1')` before: `update({name: 'Nik'}).where({ name: 'Mark'})` |

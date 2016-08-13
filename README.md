@@ -16,17 +16,16 @@ SELECT (with joins), CREATE, UPDATE, DELETE.
 ## Changelog
 
 > *Unreleased (roadmap)*
-> * SELECT ... UNION ... SELECT
 > * INSERT ... SELECT
 
+* 0.7.3 - Added UNION, LIMIT by default is empty array, Fixed tests
 * 0.7.2 - Fixes and new features in `where`. Updated MySQL adapter
-* 0.7.1 — Added changes log
-* 0.7.0 — INSERT batch implementation
 * [Details](https://github.com/niklucky/mysql-query-builder/tree/master/CHANGELOG.md)
 
 # Usage example
 ### More detailed usage:
 * [SELECT](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/SELECT.md)
+  * [SELECT ... UNION ... SELECT](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/UNION.md)
 * [INSERT](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/INSERT.md)
 * [UPDATE](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/UPDATE.md)
 * [DELETE](https://github.com/niklucky/mysql-query-builder/tree/master/docs/usage/DELETE.md)
