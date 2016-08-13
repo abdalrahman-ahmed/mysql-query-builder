@@ -1,9 +1,18 @@
 # Changelog
 
 ## Unreleased
-* SELECT ... UNION ... SELECT
 * Refactoring: builders incapsulation
 * INSERT ... SELECT
+
+## 0.7.3 — 2016-08-13
+### Added
+- SELECT ... UNION ... SELECT
+
+### Changed
+- LIMIT by default is empty array, so query now without default values.
+
+### Fixed
+* Fixed insert and builders tests
 
 ## 0.7.2 — 2016-08-02
 ### Added

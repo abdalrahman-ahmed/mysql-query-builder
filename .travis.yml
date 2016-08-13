@@ -20,4 +20,4 @@ install:
 deploy:
   provider: npm
   email: "iam@niklucky.com"
-  api_key: "72bac027-1cb9-431c-a4ea-f8bd192caf73"
+  api_key: "67d17a1f-c18d-453d-b3e2-55ca148975ba"
