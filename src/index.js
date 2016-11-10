@@ -488,7 +488,16 @@ class MySQLQueryBuilder {
             expression.key = expression.key.replace(operators[i], '').trim();
           }
         }
-
+        if (expression.key.indexOf('.') !== -1) {
+          var newKey = [];
+          var expr = expression.key.split('.');
+          for (var e in expr) {
+            newKey.push('`' + expr[e] + '`');
+          }
+          expression.key = newKey.join('.');
+        } else {
+          expression.key = '`' + expression.key + '`';
+        }
         if (typeof expression.value === 'object') {
           sign = " IN ";
           expression.value = expression.value.map(value => { return value });
@@ -512,7 +521,7 @@ class MySQLQueryBuilder {
           expressionValue = "'" + expression.value + "'";
         }
 
-        SQL += '`' + expression.key + '`' + sign + expressionValue;
+        SQL += expression.key + sign + expressionValue;
       }
     }
 
