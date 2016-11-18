@@ -503,9 +503,6 @@ class MySQLQueryBuilder {
           expression.value = expression.value.map(value => { return value });
 
           for (var key in expression.value) {
-            if (!this._where.hasOwnProperty(i)) {
-              continue;
-            }
             let value = expression.value[key];
             expressionValue = value;
             if (typeof value === "number") {
