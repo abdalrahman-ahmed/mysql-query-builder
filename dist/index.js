@@ -1,6 +1,6 @@
 "use strict";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -135,7 +135,7 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'select',
     value: function select() {
-      var fields = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+      var fields = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
       this._queryType = this._union.length === 0 ? TYPE_SELECT : TYPE_UNION;
       this._fields = fields;
@@ -312,8 +312,8 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'like',
     value: function like(field, query) {
-      var type = arguments.length <= 2 || arguments[2] === undefined ? 'both' : arguments[2];
-      var or = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+      var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'both';
+      var or = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
 
       this._like.push({
@@ -333,7 +333,7 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'join',
     value: function join(table, on) {
-      var type = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
+      var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
       if (typeof table !== 'string' || typeof on !== 'string') {
         throw new Error("JOIN: you need to specify TABLE and ON for join");
@@ -348,9 +348,9 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'limit',
     value: function limit() {
-      var start = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+      var start = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
-      var _limit = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_LIMIT : arguments[1];
+      var _limit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DEFAULT_LIMIT;
 
       this._limit = [start, _limit];
       return this;
@@ -358,7 +358,7 @@ var MySQLQueryBuilder = function () {
   }, {
     key: 'orderBy',
     value: function orderBy(orderFields) {
-      var order = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_ORDER : arguments[1];
+      var order = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DEFAULT_ORDER;
 
       if (Array.isArray(orderFields)) {
         orderFields = orderFields.join(',');
@@ -557,9 +557,6 @@ var MySQLQueryBuilder = function () {
             });
 
             for (var key in expression.value) {
-              if (!this._where.hasOwnProperty(i)) {
-                continue;
-              }
               var value = expression.value[key];
               expressionValue = value;
               if (typeof value === "number") {} else {
