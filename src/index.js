@@ -471,7 +471,6 @@ class MySQLQueryBuilder {
 
         let expression = this._where[i];
         let expressionValue = '';
-
         if (SQL !== "") {
           if (expression.or) {
             SQL += " OR ";
@@ -498,7 +497,10 @@ class MySQLQueryBuilder {
         } else {
           expression.key = '`' + expression.key + '`';
         }
-        if (typeof expression.value === 'object') {
+        if (expression.value === null) {
+          sign = (sign === '=') ? ' IS ' : ' IS NOT ';
+          expressionValue = 'NULL';
+        } else if (typeof expression.value === 'object') {
           sign = " IN ";
           expression.value = expression.value.map(value => { return value });
 
