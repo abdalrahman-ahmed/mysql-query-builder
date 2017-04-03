@@ -507,7 +507,7 @@ var MySQLQueryBuilder = function () {
         }
       }
 
-      var SQL = "SELECT " + params.fields + " " + "FROM " + params.from + this.buildJoin() + where + this.buildOrderBy() + this.buildGroupBy() + this.buildHaving() + this.buildLimit();
+      var SQL = "SELECT " + params.fields + " " + "FROM " + params.from + this.buildJoin() + where + this.buildGroupBy() + this.buildHaving() + this.buildOrderBy() + this.buildLimit();
 
       return SQL;
     }
@@ -523,7 +523,6 @@ var MySQLQueryBuilder = function () {
 
           var expression = this._where[i];
           var expressionValue = '';
-
           if (SQL !== "") {
             if (expression.or) {
               SQL += " OR ";
@@ -550,7 +549,10 @@ var MySQLQueryBuilder = function () {
           } else {
             expression.key = '`' + expression.key + '`';
           }
-          if (_typeof(expression.value) === 'object') {
+          if (expression.value === null) {
+            sign = sign === '=' ? ' IS ' : ' IS NOT ';
+            expressionValue = 'NULL';
+          } else if (_typeof(expression.value) === 'object') {
             sign = " IN ";
             expression.value = expression.value.map(function (value) {
               return value;

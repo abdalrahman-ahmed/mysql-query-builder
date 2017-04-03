@@ -14,7 +14,7 @@ module.exports = {
     12: "SELECT id, name FROM table1;",
     13: "SELECT id, name FROM table1 ORDER BY name asc LIMIT 0, 100;",
     14: "SELECT firstName, lastName FROM table2;",
-    15: "SELECT id, name FROM table1 ORDER BY name asc GROUP BY name HAVING  `name` = 'Nik' LIMIT 0, 100;"
+    15: "SELECT id, name FROM table1 GROUP BY name HAVING  `name` = 'Nik' ORDER BY name asc LIMIT 0, 100;"
   },
   INSERT: {
     1: "INSERT INTO table1 (`id`,`name`) VALUES ('1','Nik');"
