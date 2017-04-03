@@ -453,9 +453,9 @@ class MySQLQueryBuilder {
         "FROM " + params.from +
         this.buildJoin() +
         where +
-        this.buildOrderBy() +
         this.buildGroupBy() +
         this.buildHaving() +
+        this.buildOrderBy() +
         this.buildLimit();
 
     return SQL;
